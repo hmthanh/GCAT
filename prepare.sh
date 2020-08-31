@@ -1,20 +1,20 @@
-#!/bin/bash
-mkdir checkpoints
+#!/bin/bash	  
+mkdir out
 
-mkdir checkpoints/wn
-mkdir checkpoints/fb
-mkdir checkpoints/kinship
-mkdir checkpoints/umls
-mkdir checkpoints/nell
+mkdir out/wn
+mkdir out/fb
+mkdir out/kinship
+mkdir out/umls
+mkdir out/nell
 
-mkdir checkpoints/wn/out
-mkdir checkpoints/fb/out
-mkdir checkpoints/kinship/out
-mkdir checkpoints/umls/out
-mkdir checkpoints/nell/out
+mkdir out/wn/out
+mkdir out/fb/out
+mkdir out/kinship/out
+mkdir out/umls/out
+mkdir out/nell/out
 
-mkdir checkpoints/wn/out/conv
-mkdir checkpoints/fb/out/conv
-mkdir checkpoints/kinship/out/conv
-mkdir checkpoints/umls/out/conv
-mkdir checkpoints/nell/out/conv
+mkdir out/wn/out/conv
+mkdir out/fb/out/conv
+mkdir out/kinship/out/conv
+mkdir out/umls/out/conv
+mkdir out/nell/out/conv
