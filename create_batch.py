@@ -343,7 +343,7 @@ class Corpus:
         source_embeds = entity_embeddings[batch_inputs[:, 0]]
         relation_embeds = relation_embeddings[batch_inputs[:, 1]]
         tail_embeds = entity_embeddings[batch_inputs[:, 2]]
-        x = source_embeds + relation_embed - tail_embeds
+        x = source_embeds + relation_embeds - tail_embeds
         x = torch.norm(x, p=1, dim=1)
         return x
 
@@ -574,51 +574,40 @@ class Corpus:
             average_mean_recip_rank_tail.append(
                 sum(reciprocal_ranks_tail) / len(reciprocal_ranks_tail))
 
-        print("\nAveraged stats for replacing head are -> ")
-        print("Hits@100 are {}".format(
-            sum(average_hits_at_100_head) / len(average_hits_at_100_head)))
-        print("Hits@10 are {}".format(
-            sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)))
-        print("Hits@3 are {}".format(
-            sum(average_hits_at_three_head) / len(average_hits_at_three_head)))
-        print("Hits@1 are {}".format(
-            sum(average_hits_at_one_head) / len(average_hits_at_one_head)))
-        print("Mean rank {}".format(
-            sum(average_mean_rank_head) / len(average_mean_rank_head)))
-        print("Mean Reciprocal Rank {}".format(
-            sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head)))
+        with open(args.output_folder + "result.txt") as txtResult:
+            txtResult.writelineslines("\nAveraged stats for replacing head are -> ")
+            txtResult.writelines("Hits@100 are {}".format(sum(average_hits_at_100_head) / len(average_hits_at_100_head)))
+            txtResult.writelines("Hits@10 are {}".format(sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)))
+            txtResult.writelines("Hits@3 are {}".format(sum(average_hits_at_three_head) / len(average_hits_at_three_head)))
+            txtResult.writelines("Hits@1 are {}".format(sum(average_hits_at_one_head) / len(average_hits_at_one_head)))
+            txtResult.writelines("Mean rank {}".format(sum(average_mean_rank_head) / len(average_mean_rank_head)))
+            txtResult.writelines("Mean Reciprocal Rank {}".format(sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head)))
 
-        print("\nAveraged stats for replacing tail are -> ")
-        print("Hits@100 are {}".format(
-            sum(average_hits_at_100_tail) / len(average_hits_at_100_tail)))
-        print("Hits@10 are {}".format(
-            sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail)))
-        print("Hits@3 are {}".format(
-            sum(average_hits_at_three_tail) / len(average_hits_at_three_tail)))
-        print("Hits@1 are {}".format(
-            sum(average_hits_at_one_tail) / len(average_hits_at_one_tail)))
-        print("Mean rank {}".format(
-            sum(average_mean_rank_tail) / len(average_mean_rank_tail)))
-        print("Mean Reciprocal Rank {}".format(
-            sum(average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail)))
+            txtResult.writelines("\nAveraged stats for replacing tail are -> ")
+            txtResult.writelines("Hits@100 are {}".format(sum(average_hits_at_100_tail) / len(average_hits_at_100_tail)))
+            txtResult.writelines("Hits@10 are {}".format(sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail)))
+            txtResult.writelines("Hits@3 are {}".format(sum(average_hits_at_three_tail) / len(average_hits_at_three_tail)))
+            txtResult.writelines("Hits@1 are {}".format(sum(average_hits_at_one_tail) / len(average_hits_at_one_tail)))
+            txtResult.writelines("Mean rank {}".format(sum(average_mean_rank_tail) / len(average_mean_rank_tail)))
+            txtResult.writelines("Mean Reciprocal Rank {}".format(sum(average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail)))
 
-        cumulative_hits_100 = (sum(average_hits_at_100_head) / len(average_hits_at_100_head)
-                               + sum(average_hits_at_100_tail) / len(average_hits_at_100_tail)) / 2
-        cumulative_hits_ten = (sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)
-                               + sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail)) / 2
-        cumulative_hits_three = (sum(average_hits_at_three_head) / len(average_hits_at_three_head)
-                                 + sum(average_hits_at_three_tail) / len(average_hits_at_three_tail)) / 2
-        cumulative_hits_one = (sum(average_hits_at_one_head) / len(average_hits_at_one_head)
-                               + sum(average_hits_at_one_tail) / len(average_hits_at_one_tail)) / 2
-        cumulative_mean_rank = (sum(average_mean_rank_head) / len(average_mean_rank_head)
-                                + sum(average_mean_rank_tail) / len(average_mean_rank_tail)) / 2
-        cumulative_mean_recip_rank = (sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head) + sum(
-            average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail)) / 2
+            cumulative_hits_100 = (sum(average_hits_at_100_head) / len(average_hits_at_100_head)
+                                   + sum(average_hits_at_100_tail) / len(average_hits_at_100_tail)) / 2
+            cumulative_hits_ten = (sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)
+                                   + sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail)) / 2
+            cumulative_hits_three = (sum(average_hits_at_three_head) / len(average_hits_at_three_head)
+                                     + sum(average_hits_at_three_tail) / len(average_hits_at_three_tail)) / 2
+            cumulative_hits_one = (sum(average_hits_at_one_head) / len(average_hits_at_one_head)
+                                   + sum(average_hits_at_one_tail) / len(average_hits_at_one_tail)) / 2
+            cumulative_mean_rank = (sum(average_mean_rank_head) / len(average_mean_rank_head)
+                                    + sum(average_mean_rank_tail) / len(average_mean_rank_tail)) / 2
+            cumulative_mean_recip_rank = (sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head) + sum(
+                average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail)) / 2
 
-        print("\nCumulative stats are -> ")
-        print("Hits@100 are {}".format(cumulative_hits_100))
-        print("Hits@10 are {}".format(cumulative_hits_ten))
-        print("Hits@3 are {}".format(cumulative_hits_three))
-        print("Hits@1 are {}".format(cumulative_hits_one))
-        print("Mean rank {}".format(cumulative_mean_rank))
-        print("Mean Reciprocal Rank {}".format(cumulative_mean_recip_rank))
+            txtResult.writelines("\nCumulative stats are -> ")
+            txtResult.writelines("Hits@100 are {}".format(cumulative_hits_100))
+            txtResult.writelines("Hits@10 are {}".format(cumulative_hits_ten))
+            txtResult.writelines("Hits@3 are {}".format(cumulative_hits_three))
+            txtResult.writelines("Hits@1 are {}".format(cumulative_hits_one))
+            txtResult.writelines("Mean rank {}".format(cumulative_mean_rank))
+            txtResult.writelines("Mean Reciprocal Rank {}".format(cumulative_mean_recip_rank))
