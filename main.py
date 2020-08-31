@@ -1,4 +1,8 @@
+"""Install
+!pip install cloud-tpu-client==0.10 https://storage.googleapis.com/tpu-pytorch/wheels/torch_xla-1.6-cp36-cp36m-linux_x86_64.whl
+"""
 import torch
+
 
 from models import SpKBGATModified, SpKBGATConvOnly
 from torch.autograd import Variable
@@ -21,7 +25,10 @@ import logging
 import time
 import pickle
 
-# %%
+import torch_xla
+import torch_xla.core.xla_model as xm
+TPU = xm.xla_device()
+
 # %%from torchviz import make_dot, make_dot_from_trace
 
 
@@ -123,7 +130,6 @@ class Args:
 args = Args()
 # %%
 
-
 def load_data(args):
     train_data, validation_data, test_data, entity2id, relation2id, headTailSelector, unique_entities_train = build_data(
         args.data, is_unweigted=False, directed=True)
@@ -148,19 +154,19 @@ def load_data(args):
 
 Corpus_, entity_embeddings, relation_embeddings = load_data(args)
 
+if (args.is_tpu):
+    entity_embeddings = entity_embeddings.to(dev)
+    relation_embeddings = relation_embeddings.to(dev)
 
 if(args.get_2hop):
     file = args.data + "/2hop.pickle"
-    with open(file, 'wb') as handle:
-        pickle.dump(Corpus_.node_neighbors_2hop, handle,
-                    protocol=pickle.HIGHEST_PROTOCOL)
+    torch.save(Corpus_.node_neighbors_2hop, "file")
 
 
 if(args.use_2hop):
     print("Opening node_neighbors pickle object")
     file = args.data + "/2hop.pickle"
-    with open(file, 'rb') as handle:
-        node_neighbors_2hop = pickle.load(handle)
+    node_neighbors_2hop = torch.load(file)
 
 entity_embeddings_copied = deepcopy(entity_embeddings)
 relation_embeddings_copied = deepcopy(relation_embeddings)
@@ -215,6 +221,9 @@ def train_gat(args):
 
     if CUDA:
         model_gat.cuda()
+    elif (args.use_tpu):
+        model_gat.to(dev)
+    
 
     optimizer = torch.optim.Adam(
         model_gat.parameters(), lr=args.lr, weight_decay=args.weight_decay_gat)
@@ -230,17 +239,18 @@ def train_gat(args):
                                                                           Corpus_.unique_entities_train, node_neighbors_2hop)
 
     if CUDA:
-        current_batch_2hop_indices = Variable(
-            torch.LongTensor(current_batch_2hop_indices)).cuda()
+        current_batch_2hop_indices = Variable(torch.LongTensor(current_batch_2hop_indices)).cuda()
+    elif (args.use_tpu):
+        current_batch_2hop_indices = Variable(torch.LongTensor(current_batch_2hop_indices))
+        current_batch_2hop_indices.to(dev)
     else:
-        current_batch_2hop_indices = Variable(
-            torch.LongTensor(current_batch_2hop_indices))
+        current_batch_2hop_indices = Variable(torch.LongTensor(current_batch_2hop_indices))
+        
 
     epoch_losses = []   # losses of all epochs
     print("Number of epochs {}".format(args.epochs_gat))
 
     for epoch in range(args.epochs_gat):
-        print("\nepoch-> ", epoch)
         random.shuffle(Corpus_.train_triples)
         Corpus_.train_indices = np.array(
             list(Corpus_.train_triples)).astype(np.int32)
@@ -285,16 +295,11 @@ def train_gat(args):
 
             end_time_iter = time.time()
 
-            print("Iteration-> {0}  , Iteration_time-> {1:.4f} , Iteration_loss {2:.4f}".format(
-                iters, end_time_iter - start_time_iter, loss.data.item()))
-
         scheduler.step()
-        print("Epoch {} , average loss {} , epoch_time {}".format(
-            epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
         epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
 
-        save_model(model_gat, args.data, epoch,
-                   args.output_folder)
+        if (epoch > args.epochs_gat - 3):
+            save_model(model_gat, args.data, epoch, args.output_folder)
 
 
 def train_conv(args):

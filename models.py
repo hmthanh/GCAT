@@ -6,6 +6,7 @@ import time
 from layers import SpGraphAttentionLayer, ConvKB
 
 CUDA = torch.cuda.is_available()  # checking cuda availability
+TPU = xm.xla_device()
 
 
 class SpGAT(nn.Module):
@@ -125,6 +126,11 @@ class SpKBGATModified(nn.Module):
             edge_type = edge_type.cuda()
             edge_list_nhop = edge_list_nhop.cuda()
             edge_type_nhop = edge_type_nhop.cuda()
+        elif (args.use_tpu):
+            edge_list = edge_list.to(dev)
+            edge_type = edge_type.to(dev)
+            edge_list_nhop = edge_list_nhop.to(dev)
+            edge_type_nhop = edge_type_nhop.to(dev)
 
         edge_embed = self.relation_embeddings[edge_type]
 
