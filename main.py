@@ -24,9 +24,9 @@ import logging
 import time
 import pickle
 
-import torch_xla
-import torch_xla.core.xla_model as xm
-TPU = xm.xla_device()
+# import torch_xla
+# import torch_xla.core.xla_model as xm
+# TPU = xm.xla_device()
 
 # def parse_args():
 #     args = argparse.ArgumentParser()
@@ -216,8 +216,6 @@ def train_gat(args):
 
     if CUDA:
         model_gat.cuda()
-    elif (args.use_tpu):
-        model_gat.to(dev)
     
 
     optimizer = torch.optim.Adam(
@@ -235,9 +233,6 @@ def train_gat(args):
 
     if CUDA:
         current_batch_2hop_indices = Variable(torch.LongTensor(current_batch_2hop_indices)).cuda()
-    elif (args.use_tpu):
-        current_batch_2hop_indices = Variable(torch.LongTensor(current_batch_2hop_indices))
-        current_batch_2hop_indices.to(dev)
     else:
         current_batch_2hop_indices = Variable(torch.LongTensor(current_batch_2hop_indices))
         
