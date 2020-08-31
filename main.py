@@ -25,63 +25,102 @@ import pickle
 # %%from torchviz import make_dot, make_dot_from_trace
 
 
-def parse_args():
-    args = argparse.ArgumentParser()
-    # network arguments
-    args.add_argument("-data", "--data",
-                      default="./data/WN18RR/", help="data directory")
-    args.add_argument("-e_g", "--epochs_gat", type=int,
-                      default=3600, help="Number of epochs")
-    args.add_argument("-e_c", "--epochs_conv", type=int,
-                      default=200, help="Number of epochs")
-    args.add_argument("-w_gat", "--weight_decay_gat", type=float,
-                      default=5e-6, help="L2 reglarization for gat")
-    args.add_argument("-w_conv", "--weight_decay_conv", type=float,
-                      default=1e-5, help="L2 reglarization for conv")
-    args.add_argument("-pre_emb", "--pretrained_emb", type=bool,
-                      default=True, help="Use pretrained embeddings")
-    args.add_argument("-emb_size", "--embedding_size", type=int,
-                      default=50, help="Size of embeddings (if pretrained not used)")
-    args.add_argument("-l", "--lr", type=float, default=1e-3)
-    args.add_argument("-g2hop", "--get_2hop", type=bool, default=False)
-    args.add_argument("-u2hop", "--use_2hop", type=bool, default=True)
-    args.add_argument("-p2hop", "--partial_2hop", type=bool, default=False)
-    args.add_argument("-outfolder", "--output_folder",
-                      default="./checkpoints/wn/out/", help="Folder name to save the models.")
+# def parse_args():
+#     args = argparse.ArgumentParser()
+#     # network arguments
+#     args.add_argument("-data", "--data",
+#                       default="./data/WN18RR/", help="data directory")
+#     args.add_argument("-e_g", "--epochs_gat", type=int,
+#                       default=3600, help="Number of epochs")
+#     args.add_argument("-e_c", "--epochs_conv", type=int,
+#                       default=200, help="Number of epochs")
+#     args.add_argument("-w_gat", "--weight_decay_gat", type=float,
+#                       default=5e-6, help="L2 reglarization for gat")
+#     args.add_argument("-w_conv", "--weight_decay_conv", type=float,
+#                       default=1e-5, help="L2 reglarization for conv")
+#     args.add_argument("-pre_emb", "--pretrained_emb", type=bool,
+#                       default=True, help="Use pretrained embeddings")
+#     args.add_argument("-emb_size", "--embedding_size", type=int,
+#                       default=50, help="Size of embeddings (if pretrained not used)")
+#     args.add_argument("-l", "--lr", type=float, default=1e-3)
+#     args.add_argument("-g2hop", "--get_2hop", type=bool, default=False)
+#     args.add_argument("-u2hop", "--use_2hop", type=bool, default=True)
+#     args.add_argument("-p2hop", "--partial_2hop", type=bool, default=False)
+#     args.add_argument("-outfolder", "--output_folder",
+#                       default="./checkpoints/wn/out/", help="Folder name to save the models.")
+
+#     # arguments for GAT
+#     args.add_argument("-b_gat", "--batch_size_gat", type=int,
+#                       default=86835, help="Batch size for GAT")
+#     args.add_argument("-neg_s_gat", "--valid_invalid_ratio_gat", type=int,
+#                       default=2, help="Ratio of valid to invalid triples for GAT training")
+#     args.add_argument("-drop_GAT", "--drop_GAT", type=float,
+#                       default=0.3, help="Dropout probability for SpGAT layer")
+#     args.add_argument("-alpha", "--alpha", type=float,
+#                       default=0.2, help="LeakyRelu alphs for SpGAT layer")
+#     args.add_argument("-out_dim", "--entity_out_dim", type=int, nargs='+',
+#                       default=[100, 200], help="Entity output embedding dimensions")
+#     args.add_argument("-h_gat", "--nheads_GAT", type=int, nargs='+',
+#                       default=[2, 2], help="Multihead attention SpGAT")
+#     args.add_argument("-margin", "--margin", type=float,
+#                       default=5, help="Margin used in hinge loss")
+
+#     # arguments for convolution network
+#     args.add_argument("-b_conv", "--batch_size_conv", type=int,
+#                       default=128, help="Batch size for conv")
+#     args.add_argument("-alpha_conv", "--alpha_conv", type=float,
+#                       default=0.2, help="LeakyRelu alphas for conv layer")
+#     args.add_argument("-neg_s_conv", "--valid_invalid_ratio_conv", type=int, default=40,
+#                       help="Ratio of valid to invalid triples for convolution training")
+#     args.add_argument("-o", "--out_channels", type=int, default=500,
+#                       help="Number of output channels in conv layer")
+#     args.add_argument("-drop_conv", "--drop_conv", type=float,
+#                       default=0.0, help="Dropout probability for convolution layer")
+
+#     args = args.parse_args()
+#     return args
+
+
+# args = parse_args()
+
+dataset = "WN18RR/"
+root_folder = "./content/"
+
+class Args:
+     # network arguments
+    data = "./data/" + dataset
+    epochs_gat = 3600
+    epochs_conv = 200
+    weight_decay_gat = float(5e-6)
+    weight_decay_conv = float(1e-5)
+    pretrained_emb = True
+    embedding_size = 50
+    lr = float(1e-3)
+    get_2hop = True
+    use_2hop = True
+    partial_2hop = False
+    root = root_folder
+    output_folder = root_folder + "output/" + dataset
 
     # arguments for GAT
-    args.add_argument("-b_gat", "--batch_size_gat", type=int,
-                      default=86835, help="Batch size for GAT")
-    args.add_argument("-neg_s_gat", "--valid_invalid_ratio_gat", type=int,
-                      default=2, help="Ratio of valid to invalid triples for GAT training")
-    args.add_argument("-drop_GAT", "--drop_GAT", type=float,
-                      default=0.3, help="Dropout probability for SpGAT layer")
-    args.add_argument("-alpha", "--alpha", type=float,
-                      default=0.2, help="LeakyRelu alphs for SpGAT layer")
-    args.add_argument("-out_dim", "--entity_out_dim", type=int, nargs='+',
-                      default=[100, 200], help="Entity output embedding dimensions")
-    args.add_argument("-h_gat", "--nheads_GAT", type=int, nargs='+',
-                      default=[2, 2], help="Multihead attention SpGAT")
-    args.add_argument("-margin", "--margin", type=float,
-                      default=5, help="Margin used in hinge loss")
+    batch_size_gat = 86835
+    # Tỷ lệ của tập valid so với tập invalid trong khi training GAT
+    valid_invalid_ratio_gat = 2
+    drop_GAT = 0.3  # Tỷ lệ dropout của lớp SpGAT
+    alpha = 0.2  # LeakyRelu alphs for SpGAT layer
+    entity_out_dim = [100, 200]  # Miền nhúng của đầu ra output
+    nheads_GAT = [2, 2]  # Multihead attention SpGAT
+    # Margin used in hinge loss ( Sử dụng margin trong hinge (lề))
+    margin = 5
 
     # arguments for convolution network
-    args.add_argument("-b_conv", "--batch_size_conv", type=int,
-                      default=128, help="Batch size for conv")
-    args.add_argument("-alpha_conv", "--alpha_conv", type=float,
-                      default=0.2, help="LeakyRelu alphas for conv layer")
-    args.add_argument("-neg_s_conv", "--valid_invalid_ratio_conv", type=int, default=40,
-                      help="Ratio of valid to invalid triples for convolution training")
-    args.add_argument("-o", "--out_channels", type=int, default=500,
-                      help="Number of output channels in conv layer")
-    args.add_argument("-drop_conv", "--drop_conv", type=float,
-                      default=0.0, help="Dropout probability for convolution layer")
-
-    args = args.parse_args()
-    return args
-
-
-args = parse_args()
+    batch_size_conv = 128  # Batch size for conv
+    alpha_conv = 0.2  # LeakyRelu alphas for conv layer
+    # Ratio of valid to invalid triples for convolution training
+    valid_invalid_ratio_conv = 40
+    out_channels = 500  # Số lượng output channels trong lớp conv
+    drop_conv = 0.0  # Xắc xuất dropout cho lớp convolution
+args = Args()
 # %%
 
 
@@ -295,7 +334,6 @@ def train_conv(args):
     print("Number of epochs {}".format(args.epochs_conv))
 
     for epoch in range(args.epochs_conv):
-        print("\nepoch-> ", epoch)
         random.shuffle(Corpus_.train_triples)
         Corpus_.train_indices = np.array(
             list(Corpus_.train_triples)).astype(np.int32)
@@ -338,8 +376,8 @@ def train_conv(args):
 
             end_time_iter = time.time()
 
-            print("Iteration-> {0}  , Iteration_time-> {1:.4f} , Iteration_loss {2:.4f}".format(
-                iters, end_time_iter - start_time_iter, loss.data.item()))
+            # print("Iteration-> {0}  , Iteration_time-> {1:.4f} , Iteration_loss {2:.4f}".format(
+            #     iters, end_time_iter - start_time_iter, loss.data.item()))
 
         scheduler.step()
         print("Epoch {} , average loss {} , epoch_time {}".format(
@@ -347,7 +385,7 @@ def train_conv(args):
         epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
 
         save_model(model_conv, args.data, epoch,
-                   args.output_folder + "conv/")
+                   args.output_folder)
 
 
 def evaluate_conv(args, unique_entities):
@@ -355,7 +393,7 @@ def evaluate_conv(args, unique_entities):
                                  args.drop_GAT, args.drop_conv, args.alpha, args.alpha_conv,
                                  args.nheads_GAT, args.out_channels)
     model_conv.load_state_dict(torch.load(
-        '{0}conv/trained_{1}.pth'.format(args.output_folder, args.epochs_conv - 1)), strict=False)
+        '{0}/trained_{1}.pth'.format(args.output_folder, args.epochs_conv - 1)), strict=False)
 
     model_conv.cuda()
     model_conv.eval()
