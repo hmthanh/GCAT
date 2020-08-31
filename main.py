@@ -375,12 +375,13 @@ def train_conv(args):
             #     iters, end_time_iter - start_time_iter, loss.data.item()))
 
         scheduler.step()
-        print("Epoch {} , average loss {} , epoch_time {}".format(
-            epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
+        # print("Epoch {} , average loss {} , epoch_time {}".format(
+        #     epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
         epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
-
-        save_model(model_conv, args.data, epoch,
-                   args.output_folder)
+        if (epoch > args.epochs_conv - 3):
+            save_model(model_conv, args.data, epoch, args.output_folder)
+            
+    torch.save(epoch_losses, args.output_folder + "epoch_losses_conv.pt")
 
 
 def evaluate_conv(args, unique_entities):
