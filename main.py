@@ -3,7 +3,6 @@
 """
 import torch
 
-
 from models import SpKBGATModified, SpKBGATConvOnly
 from torch.autograd import Variable
 import torch.nn as nn
@@ -28,9 +27,6 @@ import pickle
 import torch_xla
 import torch_xla.core.xla_model as xm
 TPU = xm.xla_device()
-
-# %%from torchviz import make_dot, make_dot_from_trace
-
 
 # def parse_args():
 #     args = argparse.ArgumentParser()
@@ -91,11 +87,12 @@ TPU = xm.xla_device()
 # args = parse_args()
 
 dataset = "WN18RR/"
-root_folder = "./content/"
+root_folder = "content/"
+drive_folder = root_folder + "gdrive/My Drive/"
 
 class Args:
      # network arguments
-    data = "./data/" + dataset
+    data = "content/data/" + dataset
     epochs_gat = 3600
     epochs_conv = 200
     weight_decay_gat = float(5e-6)
@@ -153,10 +150,8 @@ def load_data(args):
 
 
 Corpus_, entity_embeddings, relation_embeddings = load_data(args)
-
-if (args.is_tpu):
-    entity_embeddings = entity_embeddings.to(dev)
-    relation_embeddings = relation_embeddings.to(dev)
+entity_embeddings = entity_embeddings.to(dev)
+relation_embeddings = relation_embeddings.to(dev)
 
 if(args.get_2hop):
     file = args.data + "/2hop.pickle"
