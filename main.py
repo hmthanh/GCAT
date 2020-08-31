@@ -389,7 +389,7 @@ def evaluate_conv(args, unique_entities):
                                  args.drop_GAT, args.drop_conv, args.alpha, args.alpha_conv,
                                  args.nheads_GAT, args.out_channels)
     model_conv.load_state_dict(torch.load(
-        '{0}/trained_{1}.pth'.format(args.output_folder, args.epochs_conv - 1)), strict=False)
+        '{0}trained_{1}.pth'.format(args.output_folder, args.epochs_conv - 1)), strict=False)
 
     model_conv.cuda()
     model_conv.eval()
