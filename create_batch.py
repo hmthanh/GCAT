@@ -496,7 +496,7 @@ class Corpus:
                 ranks_tail.append(
                     np.where(sorted_indices_tail.cpu().numpy() == 0)[0][0] + 1)
                 reciprocal_ranks_tail.append(1.0 / ranks_tail[-1])
-                print("sample - ", ranks_head[-1], ranks_tail[-1])
+               ####### # print("sample - ", ranks_head[-1], ranks_tail[-1])
 
             for i in range(len(ranks_head)):
                 # if ranks_head[i] <= 100:
@@ -531,7 +531,7 @@ class Corpus:
             print("Current iteration Mean Reciprocal Rank {}".format(sum(reciprocal_ranks_head) / len(reciprocal_ranks_head)))
 
             print("\nStats for replacing tail are -> ")
-            print("Current iteration Hits@100 are {}".format(hits_at_100_tail / len(ranks_head)))
+            # print("Current iteration Hits@100 are {}".format(hits_at_100_tail / len(ranks_head)))
             print("Current iteration Hits@10 are {}".format(hits_at_ten_tail / len(ranks_head)))
             print("Current iteration Hits@3 are {}".format(hits_at_three_tail / len(ranks_head)))
             print("Current iteration Hits@1 are {}".format(hits_at_one_tail / len(ranks_head)))
@@ -550,8 +550,8 @@ class Corpus:
             average_mean_recip_rank_head.append(
                 sum(reciprocal_ranks_head) / len(reciprocal_ranks_head))
 
-            average_hits_at_100_tail.append(
-                hits_at_100_tail / len(ranks_head))
+            # average_hits_at_100_tail.append(
+            #     hits_at_100_tail / len(ranks_head))
             average_hits_at_ten_tail.append(
                 hits_at_ten_tail / len(ranks_head))
             average_hits_at_three_tail.append(
