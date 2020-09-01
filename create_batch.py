@@ -600,21 +600,21 @@ class Corpus:
         print("Mean Reciprocal Rank {}\n".format(cumulative_mean_recip_rank))
 
         with open(args.output_folder + "result.txt", "w") as txtResult:
-            txtResult.writelines("\nAveraged stats for replacing head are -> \n")
-            # txtResult.writelines("Hits@100 are {}\n".format(sum(average_hits_at_100_head) / len(average_hits_at_100_head)))
-            txtResult.writelines("Hits@10 are {}\n".format(sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)))
-            txtResult.writelines("Hits@3 are {}\n".format(sum(average_hits_at_three_head) / len(average_hits_at_three_head)))
-            txtResult.writelines("Hits@1 are {}\n".format(sum(average_hits_at_one_head) / len(average_hits_at_one_head)))
-            txtResult.writelines("Mean rank {}\n".format(sum(average_mean_rank_head) / len(average_mean_rank_head)))
-            txtResult.writelines("Mean Reciprocal Rank {}\n".format(sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head)))
+            txtResult.write("\nAveraged stats for replacing head are -> \n")
+            # txtResult.write("Hits@100 are {}\n".format(sum(average_hits_at_100_head) / len(average_hits_at_100_head)))
+            txtResult.write("Hits@10 are {}\n".format(sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)))
+            txtResult.write("Hits@3 are {}\n".format(sum(average_hits_at_three_head) / len(average_hits_at_three_head)))
+            txtResult.write("Hits@1 are {}\n".format(sum(average_hits_at_one_head) / len(average_hits_at_one_head)))
+            txtResult.write("Mean rank {}\n".format(sum(average_mean_rank_head) / len(average_mean_rank_head)))
+            txtResult.write("Mean Reciprocal Rank {}\n".format(sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head)))
 
-            txtResult.writelines("\nAveraged stats for replacing tail are -> \n")
-            # txtResult.writelines("Hits@100 are {}\n".format(sum(average_hits_at_100_tail) / len(average_hits_at_100_tail)))
-            txtResult.writelines("Hits@10 are {}\n".format(sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail)))
-            txtResult.writelines("Hits@3 are {}\n".format(sum(average_hits_at_three_tail) / len(average_hits_at_three_tail)))
-            txtResult.writelines("Hits@1 are {}\n".format(sum(average_hits_at_one_tail) / len(average_hits_at_one_tail)))
-            txtResult.writelines("Mean rank {}\n".format(sum(average_mean_rank_tail) / len(average_mean_rank_tail)))
-            txtResult.writelines("Mean Reciprocal Rank {}\n".format(sum(average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail)))
+            txtResult.write("\nAveraged stats for replacing tail are -> \n")
+            # txtResult.write("Hits@100 are {}\n".format(sum(average_hits_at_100_tail) / len(average_hits_at_100_tail)))
+            txtResult.write("Hits@10 are {}\n".format(sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail)))
+            txtResult.write("Hits@3 are {}\n".format(sum(average_hits_at_three_tail) / len(average_hits_at_three_tail)))
+            txtResult.write("Hits@1 are {}\n".format(sum(average_hits_at_one_tail) / len(average_hits_at_one_tail)))
+            txtResult.write("Mean rank {}\n".format(sum(average_mean_rank_tail) / len(average_mean_rank_tail)))
+            txtResult.write("Mean Reciprocal Rank {}\n".format(sum(average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail)))
 
             # cumulative_hits_100 = (sum(average_hits_at_100_head) / len(average_hits_at_100_head)
             #                        + sum(average_hits_at_100_tail) / len(average_hits_at_100_tail)) / 2
@@ -629,11 +629,11 @@ class Corpus:
             cumulative_mean_recip_rank = (sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head) + sum(
                 average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail)) / 2
 
-            txtResult.writelines("\nCumulative stats are -> \n")
-            # txtResult.writelines("Hits@100 are {}\n".format(cumulative_hits_100))
-            txtResult.writelines("Hits@10 are {}\n".format(cumulative_hits_ten))
-            txtResult.writelines("Hits@3 are {}\n".format(cumulative_hits_three))
-            txtResult.writelines("Hits@1 are {}\n".format(cumulative_hits_one))
-            txtResult.writelines("Mean rank {}\n".format(cumulative_mean_rank))
-            txtResult.writelines("Mean Reciprocal Rank {}\n".format(cumulative_mean_recip_rank))
+            txtResult.write("\nCumulative stats are -> \n")
+            # txtResult.write("Hits@100 are {}\n".format(cumulative_hits_100))
+            txtResult.write("Hits@10 are {}\n".format(cumulative_hits_ten))
+            txtResult.write("Hits@3 are {}\n".format(cumulative_hits_three))
+            txtResult.write("Hits@1 are {}\n".format(cumulative_hits_one))
+            txtResult.write("Mean rank {}\n".format(cumulative_mean_rank))
+            txtResult.write("Mean Reciprocal Rank {}\n".format(cumulative_mean_recip_rank))
 
