@@ -90,8 +90,9 @@ dataset = "WN18RR/"
 root_folder = "content/"
 drive_folder = root_folder + "gdrive/My Drive/"
 
+
 class Args:
-     # network arguments
+    # network arguments
     data = "content/data/" + dataset
     epochs_gat = 3600
     epochs_conv = 200
@@ -124,7 +125,11 @@ class Args:
     valid_invalid_ratio_conv = 40
     out_channels = 500  # Số lượng output channels trong lớp conv
     drop_conv = 0.0  # Xắc xuất dropout cho lớp convolution
+
+
 args = Args()
+
+
 # %%
 
 def load_data(args):
@@ -150,15 +155,12 @@ def load_data(args):
 
 
 Corpus_, entity_embeddings, relation_embeddings = load_data(args)
-entity_embeddings = entity_embeddings.to(dev)
-relation_embeddings = relation_embeddings.to(dev)
 
-if(args.get_2hop):
+if (args.get_2hop):
     file = args.data + "/2hop.pickle"
     torch.save(Corpus_.node_neighbors_2hop, "file")
 
-
-if(args.use_2hop):
+if (args.use_2hop):
     print("Opening node_neighbors pickle object")
     file = args.data + "/2hop.pickle"
     node_neighbors_2hop = torch.load(file)
@@ -203,7 +205,6 @@ def batch_gat_loss(gat_loss_func, train_indices, entity_embed, relation_embed):
 
 
 def train_gat(args):
-
     # Creating the gat model here.
     ####################################
 
@@ -216,7 +217,6 @@ def train_gat(args):
 
     if CUDA:
         model_gat.cuda()
-    
 
     optimizer = torch.optim.Adam(
         model_gat.parameters(), lr=args.lr, weight_decay=args.weight_decay_gat)
@@ -227,17 +227,17 @@ def train_gat(args):
     gat_loss_func = nn.MarginRankingLoss(margin=args.margin)
 
     current_batch_2hop_indices = torch.tensor([])
-    if(args.use_2hop):
+    if (args.use_2hop):
         current_batch_2hop_indices = Corpus_.get_batch_nhop_neighbors_all(args,
-                                                                          Corpus_.unique_entities_train, node_neighbors_2hop)
+                                                                          Corpus_.unique_entities_train,
+                                                                          node_neighbors_2hop)
 
     if CUDA:
         current_batch_2hop_indices = Variable(torch.LongTensor(current_batch_2hop_indices)).cuda()
     else:
         current_batch_2hop_indices = Variable(torch.LongTensor(current_batch_2hop_indices))
-        
 
-    epoch_losses = []   # losses of all epochs
+    epoch_losses = []  # losses of all epochs
     print("Number of epochs {}".format(args.epochs_gat))
 
     for epoch in range(args.epochs_gat):
@@ -254,7 +254,7 @@ def train_gat(args):
                 Corpus_.train_indices) // args.batch_size_gat
         else:
             num_iters_per_epoch = (
-                len(Corpus_.train_indices) // args.batch_size_gat) + 1
+                                          len(Corpus_.train_indices) // args.batch_size_gat) + 1
 
         for iters in range(num_iters_per_epoch):
             start_time_iter = time.time()
@@ -293,7 +293,6 @@ def train_gat(args):
 
 
 def train_conv(args):
-
     # Creating convolution model here.
     ####################################
 
@@ -325,7 +324,7 @@ def train_conv(args):
 
     margin_loss = torch.nn.SoftMarginLoss()
 
-    epoch_losses = []   # losses of all epochs
+    epoch_losses = []  # losses of all epochs
     print("Number of epochs {}".format(args.epochs_conv))
 
     for epoch in range(args.epochs_conv):
@@ -342,7 +341,7 @@ def train_conv(args):
                 Corpus_.train_indices) // args.batch_size_conv
         else:
             num_iters_per_epoch = (
-                len(Corpus_.train_indices) // args.batch_size_conv) + 1
+                                          len(Corpus_.train_indices) // args.batch_size_conv) + 1
 
         for iters in range(num_iters_per_epoch):
             start_time_iter = time.time()
@@ -380,7 +379,7 @@ def train_conv(args):
         epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
         if (epoch > args.epochs_conv - 3):
             save_model(model_conv, args.data, epoch, args.output_folder)
-            
+
     torch.save(epoch_losses, args.output_folder + "epoch_losses_conv.pt")
 
 
