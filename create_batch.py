@@ -360,7 +360,7 @@ class Corpus:
 
             indices = [i for i in range(len(self.test_indices))]
             batch_indices = self.test_indices[indices, :]
-            print("Sampled indices")
+            print("Sampled indices Hello")
             print("test set length ", len(self.test_indices))
             entity_list = [j for i, j in self.entity2id.items()]
 
