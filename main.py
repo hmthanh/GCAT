@@ -135,7 +135,7 @@ def load_data(args):
     if args.pretrained_emb:
         entity_embeddings, relation_embeddings = init_embeddings(os.path.join(args.data, 'entity2vec.txt'),
                                                                  os.path.join(args.data, 'relation2vec.txt'))
-        print("Initialised relations and entities from TransE")s
+        print("Initialised relations and entities from TransE")
     else:
         entity_embeddings = np.random.randn(
             len(entity2id), args.embedding_size)
