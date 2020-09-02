@@ -126,11 +126,7 @@ class Args:
     out_channels = 500  # Số lượng output channels trong lớp conv
     drop_conv = 0.0  # Xắc xuất dropout cho lớp convolution
 
-
 args = Args()
-
-
-# %%
 
 def load_data(args):
     train_data, validation_data, test_data, entity2id, relation2id, headTailSelector, unique_entities_train = build_data(
@@ -139,8 +135,7 @@ def load_data(args):
     if args.pretrained_emb:
         entity_embeddings, relation_embeddings = init_embeddings(os.path.join(args.data, 'entity2vec.txt'),
                                                                  os.path.join(args.data, 'relation2vec.txt'))
-        print("Initialised relations and entities from TransE")
-
+        print("Initialised relations and entities from TransE")s
     else:
         entity_embeddings = np.random.randn(
             len(entity2id), args.embedding_size)
