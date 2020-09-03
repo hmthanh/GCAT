@@ -8,4 +8,4 @@ _has_part	6
 _member_of_domain_usage	7
 _member_of_domain_region	8
 _verb_group	9
-_similar_to 10 
+_similar_to	10

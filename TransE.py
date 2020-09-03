@@ -131,3 +131,7 @@ class TransE(nn.Module):
         distances_view = distances.view(size=(-1,))
 
         return distances_view
+
+
+# Corpus_, Corpus_.train_adj_matrix, train_indices,
+
