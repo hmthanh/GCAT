@@ -3,20 +3,22 @@ import torch
 from models import SpKBGATModified, SpKBGATConvOnly
 from torch.autograd import Variable
 import numpy as np
-from utils import save_model
-
+from utils import save_model, load_object, load_model, save_object
 import random
 import time
 from create_config import Config
 
 args = Config()
 args.load_config()
+device = torch.device("cuda:0" if args.cuda else "cpu")
 
 print("Loading corpus")
-device = "gpu" if args.cuda else "cpu"
-Corpus_ = torch.load("{output}corpus_{device}.pt".format(output=args.data_folder, device=device))
-entity_embeddings = torch.load("{output}entity_embeddings_{device}.pt".format(output=args.data_folder, device=device))
-relation_embeddings = torch.load("{output}relation_embeddings_{device}.pt".format(output=args.data_folder, device=device))
+output=args.data_folder
+if args.save_gdrive:
+    output=args.drive_folder
+Corpus_ = load_object(output_folder=output, name="corpus")
+entity_embeddings = load_object(output_folder=output, name="entity_embeddings")
+relation_embeddings = load_object(output_folder=output, name="relation_embeddings")
 node_neighbors_2hop = Corpus_.node_neighbors_2hop
 
 print("Defining model")
@@ -31,8 +33,8 @@ if args.cuda:
     model_gat.cuda()
 
 print("Loading GAT encoder")
-gat_model_path = '{output}{dataset}/trained_{epoch}.pt'.format(output=args.output_folder, dataset=args.dataset, epoch=args.epochs_gat - 1)
-model_gat.load_state_dict(torch.load(gat_model_path), strict=False)
+model = load_model("gat", epoch=args.epochs_gat - 1)
+#model_gat.load_state_dict(model, strict=False)
 
 print("Only Conv model trained")
 model_conv.final_entity_embeddings = model_gat.final_entity_embeddings
@@ -65,10 +67,10 @@ for epoch in range(args.epochs_conv):
         num_iters_per_epoch = len(
             Corpus_.train_indices) // args.batch_size_conv
     else:
-        num_iters_per_epoch = (
-                                      len(Corpus_.train_indices) // args.batch_size_conv) + 1
+        num_iters_per_epoch = (len(Corpus_.train_indices) // args.batch_size_conv) + 1
 
-    for iters in range(num_iters_per_epoch):
+    #for iters in range(num_iters_per_epoch):
+    for iters in range(1):
         start_time_iter = time.time()
         train_indices, train_values = Corpus_.get_iteration_batch(iters)
 
@@ -102,9 +104,12 @@ for epoch in range(args.epochs_conv):
     print("Epoch {} , average loss {} , epoch_time {}".format(
         epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
     epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
-    if (epoch > args.epochs_conv - 3):
-        save_model(model_conv, args.data_folder, epoch, args.output_folder)
+    if epoch >= args.epochs_conv - 1:
+        save_model(model_conv, name="conv", epoch=epoch)
 
-torch.save(epoch_losses, args.output_folder + "epoch_losses_conv.pt")
+output=args.output_folder
+if args.save_gdrive:
+    output=args.drive_folder
+save_object(epoch_losses, output_folder=output, name="loss_conv")
 
 print("3. Train Decoder Successfully !")

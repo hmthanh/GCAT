@@ -54,15 +54,13 @@ def getID(folder='data/WN18RR/'):
                      '\t' + str(line[2]) + '\n')
         print("Size of test_marked set set ", count)
 
-    wri = open(folder + 'entity2id.txt', 'w')
-    for entity in lstEnts:
-        wri.write(entity + '\t' + str(lstEnts[entity]))
-        wri.write('\n')
-    wri.close()
+    with open(folder + 'entity2id.txt', 'w') as writeE2ID:
+        for entity in lstEnts:
+            writeE2ID.write(entity + ' ' + str(lstEnts[entity]))
+            writeE2ID.write('\n')
 
-    wri = open(folder + 'relation2id.txt', 'w')
-    for entity in lstRels:
-        wri.write(entity + '\t' + str(lstRels[entity]))
-        wri.write('\n')
-    wri.close()
+    with open(folder + 'relation2id.txt', 'w') as writeR2ID:
+        for entity in lstRels:
+            writeR2ID.write(entity + ' ' + str(lstRels[entity]))
+            writeR2ID.write('\n')
 

@@ -1,15 +1,15 @@
 import torch
 
 import numpy as np
-
+from utils import save_object
 from preprocess import  init_embeddings, build_data
 from create_batch import Corpus
 import os
-
 from create_config import Config
 
 args = Config()
 args.load_config()
+device = torch.device("cuda:0" if args.cuda else "cpu")
 
 train_data, validation_data, test_data, entity2id, relation2id, headTailSelector, unique_entities_train = build_data(args.data_folder, is_unweigted=False, directed=True)
 (test_triples, test_adjacency_mat) = test_data
@@ -19,7 +19,6 @@ print("entity2id", len(entity2id))
 print("relation2id", len(relation2id))
 print("headTailSelector", len(headTailSelector))
 print("unique_entities_train", np.array(unique_entities_train).shape, "\n")
-
 
 if args.pretrained_emb:
     entity_embeddings, relation_embeddings = init_embeddings(os.path.join(args.data_folder, 'entity2vec.txt'),
@@ -39,16 +38,11 @@ Corpus_ = Corpus(args, train_data, validation_data, test_data, entity2id, relati
 entity_embeddings = torch.FloatTensor(entity_embeddings)
 relation_embeddings = torch.FloatTensor(relation_embeddings)
 
-device = "gpu" if args.cuda else "cpu"
-if (args.save_gdrive):
-    torch.save(Corpus_, "{output}corpus_{device}.pt".format(output=args.drive_folder, device=device))
-    torch.save(entity_embeddings, "{output}entity_embeddings_{device}.pt".format(output=args.drive_folder, device=device))
-    torch.save(relation_embeddings, "{output}relation_embeddings_{device}.pt".format(output=args.drive_folder, device=device))
-    node_neighbors_2hop = Corpus_.node_neighbors_2hop
-else:
-    torch.save(Corpus_, "{output}corpus_{device}.pt".format(output=args.data_folder, device=device))
-    torch.save(entity_embeddings, "{output}entity_embeddings_{device}.pt".format(output=args.data_folder, device=device))
-    torch.save(relation_embeddings, "{output}relation_embeddings_{device}.pt".format(output=args.data_folder, device=device))
-    node_neighbors_2hop = Corpus_.node_neighbors_2hop
-
+output = args.data_folder
+if args.save_gdrive:
+    output= args.drive_folder
+    
+save_object(Corpus_, output=output, name="corpus")
+save_object(entity_embeddings, output=output, name="entity_embeddings")
+save_object(relation_embeddings, output=output, name="relation_embeddings")
 print("1. Created Corpus Successfully !")

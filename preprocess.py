@@ -123,9 +123,12 @@ def build_data(path='./data/WN18RR/', is_unweigted=False, directed=True):
         right_entity[relation2id[relation]][entity2id[e2]] += 1
 
     left_entity_avg = {}
+    print("left_entity", left_entity)
     for i in range(len(relation2id)):
-        left_entity_avg[i] = sum(
-            left_entity[i].values()) * 1.0 / len(left_entity[i])
+        print(i, "dsf")
+        print("len(left_entity[i])", i, " i ", len(left_entity[i]))
+        print("left_entity[{index}]".format(index = i), left_entity[i])
+        left_entity_avg[i] = sum(left_entity[i].values()) * 1.0 / len(left_entity[i])
 
     right_entity_avg = {}
     for i in range(len(relation2id)):

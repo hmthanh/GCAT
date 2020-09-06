@@ -1,16 +1,19 @@
 import torch
 from models import SpKBGATConvOnly
 from create_config import Config
+from utils import load_object
 
 args = Config()
 args.load_config()
+device = torch.device("cuda:0" if args.cuda else "cpu")
 
 print("Loading corpus")
-
-device = "gpu" if args.cuda else "cpu"
-Corpus_ = torch.load("{output}corpus_{device}.pt".format(output=args.data_folder, device=device))
-entity_embeddings = torch.load("{output}entity_embeddings_{device}.pt".format(output=args.data_folder, device=device))
-relation_embeddings = torch.load("{output}relation_embeddings_{device}.pt".format(output=args.data_folder, device=device))
+output=args.data_folder
+if args.save_gdrive:
+    output=args.drive_folder
+Corpus_ = load_object(output_folder=output, name="corpus")
+entity_embeddings = load_object(output_folder=output, name="entity_embeddings")
+relation_embeddings = load_object(output_folder=output, name="relation_embeddings")
 node_neighbors_2hop = Corpus_.node_neighbors_2hop
 
 print("Defining model")

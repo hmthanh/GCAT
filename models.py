@@ -4,9 +4,10 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 import time
 from layers import SpGraphAttentionLayer, ConvKB
+from create_config import Config
 
-CUDA = torch.cuda.is_available()  # checking cuda availability
-
+args = Config()
+args.load_config()
 
 class SpGAT(nn.Module):
     def __init__(self, num_nodes, nfeat, nhid, relation_dim, dropout, alpha, nheads):
@@ -120,7 +121,7 @@ class SpKBGATModified(nn.Module):
         edge_type_nhop = torch.cat(
             [train_indices_nhop[:, 1].unsqueeze(-1), train_indices_nhop[:, 2].unsqueeze(-1)], dim=1)
 
-        if(CUDA):
+        if args.cuda:
             edge_list = edge_list.cuda()
             edge_type = edge_type.cuda()
             edge_list_nhop = edge_list_nhop.cuda()
@@ -140,9 +141,12 @@ class SpKBGATModified(nn.Module):
             Corpus_, batch_inputs, self.entity_embeddings, self.relation_embeddings,
             edge_list, edge_type, edge_embed, edge_list_nhop, edge_type_nhop)
 
-        mask_indices = torch.unique(batch_inputs[:, 2]).cuda()
-        mask = torch.zeros(self.entity_embeddings.shape[0]).cuda()
+        mask_indices = torch.unique(batch_inputs[:, 2])
+        mask = torch.zeros(self.entity_embeddings.shape[0])
         mask[mask_indices] = 1.0
+        if args.cuda:
+            mask_indices.cuda()
+            mask.cuda()
 
         entities_upgraded = self.entity_embeddings.mm(self.W_entities)
         out_entity_1 = entities_upgraded + \

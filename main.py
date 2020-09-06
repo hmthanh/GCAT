@@ -283,7 +283,8 @@ def train_gat(args):
         epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
 
         if (epoch > args.epochs_gat - 3):
-            save_model(model_gat, args.data_folder, epoch, args.output_folder)
+            model_name = "{dataset}_conv_{device}_{epoch}".format(dataset=args.dataset, device=args.device, epoch=epoch)
+            save_model(model_gat, epoch)
 
 
 def train_conv(args):
@@ -372,7 +373,7 @@ def train_conv(args):
         #     epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
         epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
         if (epoch > args.epochs_conv - 3):
-            save_model(model_conv, args.data_folder, epoch, args.output_folder)
+            save_model(model_conv,  epoch)
 
     torch.save(epoch_losses, args.output_folder + "epoch_losses_conv.pt")
 

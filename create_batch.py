@@ -4,7 +4,13 @@ from collections import defaultdict
 import time
 import queue
 import random
+from create_config import Config
+from utils import save_txt
 
+args = Config()
+args.load_config()
+
+device = torch.device("cuda:0" if args.cuda else "cpu")
 
 class Corpus:
     def __init__(self, args, train_data, validation_data, test_data, entity2id,
@@ -418,28 +424,16 @@ class Corpus:
                 if 'WN' in args.data_folder:
                     num_triples_each_shot = int(
                         math.ceil(new_x_batch_head.shape[0] / 4))
-
+                        
                     scores1_head = model.batch_test(torch.LongTensor(
-                        new_x_batch_head[:num_triples_each_shot, :]).cuda())
+                        new_x_batch_head[:num_triples_each_shot, :], device=device))
                     scores2_head = model.batch_test(torch.LongTensor(
-                        new_x_batch_head[num_triples_each_shot: 2 * num_triples_each_shot, :]).cuda())
+                        new_x_batch_head[num_triples_each_shot: 2 * num_triples_each_shot, :], device=device))
                     scores3_head = model.batch_test(torch.LongTensor(
-                        new_x_batch_head[2 * num_triples_each_shot: 3 * num_triples_each_shot, :]).cuda())
+                        new_x_batch_head[2 * num_triples_each_shot: 3 * num_triples_each_shot, :], device=device))
                     scores4_head = model.batch_test(torch.LongTensor(
-                        new_x_batch_head[3 * num_triples_each_shot: 4 * num_triples_each_shot, :]).cuda())
-                    # scores5_head = model.batch_test(torch.LongTensor(
-                    #     new_x_batch_head[4 * num_triples_each_shot: 5 * num_triples_each_shot, :]).cuda())
-                    # scores6_head = model.batch_test(torch.LongTensor(
-                    #     new_x_batch_head[5 * num_triples_each_shot: 6 * num_triples_each_shot, :]).cuda())
-                    # scores7_head = model.batch_test(torch.LongTensor(
-                    #     new_x_batch_head[6 * num_triples_each_shot: 7 * num_triples_each_shot, :]).cuda())
-                    # scores8_head = model.batch_test(torch.LongTensor(
-                    #     new_x_batch_head[7 * num_triples_each_shot: 8 * num_triples_each_shot, :]).cuda())
-                    # scores9_head = model.batch_test(torch.LongTensor(
-                    #     new_x_batch_head[8 * num_triples_each_shot: 9 * num_triples_each_shot, :]).cuda())
-                    # scores10_head = model.batch_test(torch.LongTensor(
-                    #     new_x_batch_head[9 * num_triples_each_shot:, :]).cuda())
-
+                        new_x_batch_head[3 * num_triples_each_shot: 4 * num_triples_each_shot, :], device=device))
+                    
                     scores_head = torch.cat(
                         [scores1_head, scores2_head, scores3_head, scores4_head], dim=0)
                     #scores5_head, scores6_head, scores7_head, scores8_head,
@@ -461,25 +455,14 @@ class Corpus:
                         math.ceil(new_x_batch_tail.shape[0] / 4))
 
                     scores1_tail = model.batch_test(torch.LongTensor(
-                        new_x_batch_tail[:num_triples_each_shot, :]).cuda())
+                        new_x_batch_tail[:num_triples_each_shot, :], device=device))
                     scores2_tail = model.batch_test(torch.LongTensor(
-                        new_x_batch_tail[num_triples_each_shot: 2 * num_triples_each_shot, :]).cuda())
+                        new_x_batch_tail[num_triples_each_shot: 2 * num_triples_each_shot, :], device=device))
                     scores3_tail = model.batch_test(torch.LongTensor(
-                        new_x_batch_tail[2 * num_triples_each_shot: 3 * num_triples_each_shot, :]).cuda())
+                        new_x_batch_tail[2 * num_triples_each_shot: 3 * num_triples_each_shot, :], device=device))
                     scores4_tail = model.batch_test(torch.LongTensor(
-                        new_x_batch_tail[3 * num_triples_each_shot: 4 * num_triples_each_shot, :]).cuda())
-                    # scores5_tail = model.batch_test(torch.LongTensor(
-                    #     new_x_batch_tail[4 * num_triples_each_shot: 5 * num_triples_each_shot, :]).cuda())
-                    # scores6_tail = model.batch_test(torch.LongTensor(
-                    #     new_x_batch_tail[5 * num_triples_each_shot: 6 * num_triples_each_shot, :]).cuda())
-                    # scores7_tail = model.batch_test(torch.LongTensor(
-                    #     new_x_batch_tail[6 * num_triples_each_shot: 7 * num_triples_each_shot, :]).cuda())
-                    # scores8_tail = model.batch_test(torch.LongTensor(
-                    #     new_x_batch_tail[7 * num_triples_each_shot: 8 * num_triples_each_shot, :]).cuda())
-                    # scores9_tail = model.batch_test(torch.LongTensor(
-                    #     new_x_batch_tail[8 * num_triples_each_shot: 9 * num_triples_each_shot, :]).cuda())
-                    # scores10_tail = model.batch_test(torch.LongTensor(
-                    #     new_x_batch_tail[9 * num_triples_each_shot:, :]).cuda())
+                        new_x_batch_tail[3 * num_triples_each_shot: 4 * num_triples_each_shot, :], device=device))
+                    
 
                     scores_tail = torch.cat(
                         [scores1_tail, scores2_tail, scores3_tail, scores4_tail], dim=0)
@@ -499,8 +482,6 @@ class Corpus:
                ####### # print("sample - ", ranks_head[-1], ranks_tail[-1])
 
             for i in range(len(ranks_head)):
-                # if ranks_head[i] <= 100:
-                #     hits_at_100_head = hits_at_100_head + 1
                 if ranks_head[i] <= 10:
                     hits_at_ten_head = hits_at_ten_head + 1
                 if ranks_head[i] <= 3:
@@ -509,8 +490,6 @@ class Corpus:
                     hits_at_one_head = hits_at_one_head + 1
 
             for i in range(len(ranks_tail)):
-                # if ranks_tail[i] <= 100:
-                #     hits_at_100_tail = hits_at_100_tail + 1
                 if ranks_tail[i] <= 10:
                     hits_at_ten_tail = hits_at_ten_tail + 1
                 if ranks_tail[i] <= 3:
@@ -523,7 +502,6 @@ class Corpus:
             print("here {}".format(len(ranks_head)))
             print("\nCurrent iteration time {}".format(time.time() - start_time))
             print("Stats for replacing head are -> ")
-            # print("Current iteration Hits@100 are {}".format(hits_at_100_head / float(len(ranks_head))))
             print("Current iteration Hits@10 are {}".format(hits_at_ten_head / len(ranks_head)))
             print("Current iteration Hits@3 are {}".format(hits_at_three_head / len(ranks_head)))
             print("Current iteration Hits@1 are {}".format(hits_at_one_head / len(ranks_head)))
@@ -531,15 +509,12 @@ class Corpus:
             print("Current iteration Mean Reciprocal Rank {}".format(sum(reciprocal_ranks_head) / len(reciprocal_ranks_head)))
 
             print("\nStats for replacing tail are -> ")
-            # print("Current iteration Hits@100 are {}".format(hits_at_100_tail / len(ranks_head)))
             print("Current iteration Hits@10 are {}".format(hits_at_ten_tail / len(ranks_head)))
             print("Current iteration Hits@3 are {}".format(hits_at_three_tail / len(ranks_head)))
             print("Current iteration Hits@1 are {}".format(hits_at_one_tail / len(ranks_head)))
             print("Current iteration Mean rank {}".format(sum(ranks_tail) / len(ranks_tail)))
             print("Current iteration Mean Reciprocal Rank {}".format(sum(reciprocal_ranks_tail) / len(reciprocal_ranks_tail)))
 
-            # average_hits_at_100_head.append(
-            #     hits_at_100_head / len(ranks_head))
             average_hits_at_ten_head.append(
                 hits_at_ten_head / len(ranks_head))
             average_hits_at_three_head.append(
@@ -550,8 +525,6 @@ class Corpus:
             average_mean_recip_rank_head.append(
                 sum(reciprocal_ranks_head) / len(reciprocal_ranks_head))
 
-            # average_hits_at_100_tail.append(
-            #     hits_at_100_tail / len(ranks_head))
             average_hits_at_ten_tail.append(
                 hits_at_ten_tail / len(ranks_head))
             average_hits_at_three_tail.append(
@@ -563,7 +536,6 @@ class Corpus:
                 sum(reciprocal_ranks_tail) / len(reciprocal_ranks_tail))
 
         print("\nAveraged stats for replacing head are -> \n")
-        # print("Hits@100 are {}\n".format(sum(average_hits_at_100_head) / len(average_hits_at_100_head)))
         print("Hits@10 are {}\n".format(sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)))
         print("Hits@3 are {}\n".format(sum(average_hits_at_three_head) / len(average_hits_at_three_head)))
         print("Hits@1 are {}\n".format(sum(average_hits_at_one_head) / len(average_hits_at_one_head)))
@@ -571,15 +543,12 @@ class Corpus:
         print("Mean Reciprocal Rank {}\n".format(sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head)))
 
         print("\nAveraged stats for replacing tail are -> \n")
-        # print("Hits@100 are {}\n".format(sum(average_hits_at_100_tail) / len(average_hits_at_100_tail)))
         print("Hits@10 are {}\n".format(sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail)))
         print("Hits@3 are {}\n".format(sum(average_hits_at_three_tail) / len(average_hits_at_three_tail)))
         print("Hits@1 are {}\n".format(sum(average_hits_at_one_tail) / len(average_hits_at_one_tail)))
         print("Mean rank {}\n".format(sum(average_mean_rank_tail) / len(average_mean_rank_tail)))
         print("Mean Reciprocal Rank {}\n".format(sum(average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail)))
 
-        # cumulative_hits_100 = (sum(average_hits_at_100_head) / len(average_hits_at_100_head)
-        #                        + sum(average_hits_at_100_tail) / len(average_hits_at_100_tail)) / 2
         cumulative_hits_ten = (sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)
                                + sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail)) / 2
         cumulative_hits_three = (sum(average_hits_at_three_head) / len(average_hits_at_three_head)
@@ -592,48 +561,34 @@ class Corpus:
             average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail)) / 2
 
         print("\nCumulative stats are -> \n")
-        # print("Hits@100 are {}\n".format(cumulative_hits_100))
         print("Hits@10 are {}\n".format(cumulative_hits_ten))
         print("Hits@3 are {}\n".format(cumulative_hits_three))
         print("Hits@1 are {}\n".format(cumulative_hits_one))
         print("Mean rank {}\n".format(cumulative_mean_rank))
         print("Mean Reciprocal Rank {}\n".format(cumulative_mean_recip_rank))
 
-        with open(args.output_folder + "result.txt", "w") as txtResult:
-            txtResult.write("\nAveraged stats for replacing head are -> \n")
-            # txtResult.write("Hits@100 are {}\n".format(sum(average_hits_at_100_head) / len(average_hits_at_100_head)))
-            txtResult.write("Hits@10 are {}\n".format(sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)))
-            txtResult.write("Hits@3 are {}\n".format(sum(average_hits_at_three_head) / len(average_hits_at_three_head)))
-            txtResult.write("Hits@1 are {}\n".format(sum(average_hits_at_one_head) / len(average_hits_at_one_head)))
-            txtResult.write("Mean rank {}\n".format(sum(average_mean_rank_head) / len(average_mean_rank_head)))
-            txtResult.write("Mean Reciprocal Rank {}\n".format(sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head)))
+        lines = "\nAveraged stats for replacing head are -> \n"
+        lines += "Hits@10 are {}\n".format(sum(average_hits_at_ten_head) / len(average_hits_at_ten_head))
+        lines += "Hits@3 are {}\n".format(sum(average_hits_at_three_head) / len(average_hits_at_three_head))
+        lines += "Hits@1 are {}\n".format(sum(average_hits_at_one_head) / len(average_hits_at_one_head))
+        lines += "Mean rank {}\n".format(sum(average_mean_rank_head) / len(average_mean_rank_head))
+        lines += "Mean Reciprocal Rank {}\n".format(sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head))
 
-            txtResult.write("\nAveraged stats for replacing tail are -> \n")
-            # txtResult.write("Hits@100 are {}\n".format(sum(average_hits_at_100_tail) / len(average_hits_at_100_tail)))
-            txtResult.write("Hits@10 are {}\n".format(sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail)))
-            txtResult.write("Hits@3 are {}\n".format(sum(average_hits_at_three_tail) / len(average_hits_at_three_tail)))
-            txtResult.write("Hits@1 are {}\n".format(sum(average_hits_at_one_tail) / len(average_hits_at_one_tail)))
-            txtResult.write("Mean rank {}\n".format(sum(average_mean_rank_tail) / len(average_mean_rank_tail)))
-            txtResult.write("Mean Reciprocal Rank {}\n".format(sum(average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail)))
+        lines += "\nAveraged stats for replacing tail are -> \n"
+        lines += "Hits@10 are {}\n".format(sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail))
+        lines += "Hits@3 are {}\n".format(sum(average_hits_at_three_tail) / len(average_hits_at_three_tail))
+        lines += "Hits@1 are {}\n".format(sum(average_hits_at_one_tail) / len(average_hits_at_one_tail))
+        lines += "Mean rank {}\n".format(sum(average_mean_rank_tail) / len(average_mean_rank_tail))
+        lines += "Mean Reciprocal Rank {}\n".format(sum(average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail))
 
-            # cumulative_hits_100 = (sum(average_hits_at_100_head) / len(average_hits_at_100_head)
-            #                        + sum(average_hits_at_100_tail) / len(average_hits_at_100_tail)) / 2
-            cumulative_hits_ten = (sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)
-                                   + sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail)) / 2
-            cumulative_hits_three = (sum(average_hits_at_three_head) / len(average_hits_at_three_head)
-                                     + sum(average_hits_at_three_tail) / len(average_hits_at_three_tail)) / 2
-            cumulative_hits_one = (sum(average_hits_at_one_head) / len(average_hits_at_one_head)
-                                   + sum(average_hits_at_one_tail) / len(average_hits_at_one_tail)) / 2
-            cumulative_mean_rank = (sum(average_mean_rank_head) / len(average_mean_rank_head)
-                                    + sum(average_mean_rank_tail) / len(average_mean_rank_tail)) / 2
-            cumulative_mean_recip_rank = (sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head) + sum(
-                average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail)) / 2
+        lines += "\nCumulative stats are -> \n"
+        lines += "Hits@10 are {}\n".format(cumulative_hits_ten)
+        lines += "Hits@3 are {}\n".format(cumulative_hits_three)
+        lines += "Hits@1 are {}\n".format(cumulative_hits_one)
+        lines += "Mean rank {}\n".format(cumulative_mean_rank)
+        lines += "Mean Reciprocal Rank {}\n".format(cumulative_mean_recip_rank)
 
-            txtResult.write("\nCumulative stats are -> \n")
-            # txtResult.write("Hits@100 are {}\n".format(cumulative_hits_100))
-            txtResult.write("Hits@10 are {}\n".format(cumulative_hits_ten))
-            txtResult.write("Hits@3 are {}\n".format(cumulative_hits_three))
-            txtResult.write("Hits@1 are {}\n".format(cumulative_hits_one))
-            txtResult.write("Mean rank {}\n".format(cumulative_mean_rank))
-            txtResult.write("Mean Reciprocal Rank {}\n".format(cumulative_mean_recip_rank))
-
+        output = args.output_folder
+        if args.save_gdrive:
+            output = args.drive_folder
+        save_txt(output, "result", lines)
