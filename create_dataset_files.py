@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def getID(folder='data/WN18RR/'):
     lstEnts = {}
     lstRels = {}
@@ -67,5 +66,3 @@ def getID(folder='data/WN18RR/'):
         wri.write('\n')
     wri.close()
 
-
-getID()

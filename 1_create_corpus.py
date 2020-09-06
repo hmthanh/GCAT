@@ -59,7 +59,6 @@ def load_data_main(args):
 
 Corpus_, entity_embeddings, relation_embeddings = load_data_main(args)
 
-drive_folder = "/content/gdrive/"
 
 if (args.save_gdrive):
     torch.save(Corpus_, args.drive_folder + "Corpus_torch.pt")
