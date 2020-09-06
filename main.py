@@ -86,7 +86,7 @@ import time
 # args = parse_args()
 
 dataset = "WN18RR/"
-root_folder = "content/"
+root_folder = "D:/thesis/CGAT/"
 drive_folder = root_folder + "gdrive/My Drive/"
 
 
@@ -129,11 +129,11 @@ args = Args()
 
 def load_data(args):
     train_data, validation_data, test_data, entity2id, relation2id, headTailSelector, unique_entities_train = build_data(
-        args.data, is_unweigted=False, directed=True)
+        args.data_folder, is_unweigted=False, directed=True)
 
     if args.pretrained_emb:
-        entity_embeddings, relation_embeddings = init_embeddings(os.path.join(args.data, 'entity2vec.txt'),
-                                                                 os.path.join(args.data, 'relation2vec.txt'))
+        entity_embeddings, relation_embeddings = init_embeddings(os.path.join(args.data_folder, 'entity2vec.txt'),
+                                                                 os.path.join(args.data_folder, 'relation2vec.txt'))
         print("Initialised relations and entities from TransE")
     else:
         entity_embeddings = np.random.randn(
@@ -150,17 +150,17 @@ def load_data(args):
 
 Corpus_, entity_embeddings, relation_embeddings = load_data(args)
 
-if (args.get_2hop):
-    file = args.data + "/2hop.pickle"
-    torch.save(Corpus_.node_neighbors_2hop, "file")
+# if (args.get_2hop):
+#     file = args.data_folder + "/2hop.pickle"
+#     torch.save(Corpus_.node_neighbors_2hop, "file")
+#
+# if (args.use_2hop):
+#     print("Opening node_neighbors pickle object")
+#     file = args.data_folder + "/2hop.pickle"
+#     node_neighbors_2hop = torch.load(file)
 
-if (args.use_2hop):
-    print("Opening node_neighbors pickle object")
-    file = args.data + "/2hop.pickle"
-    node_neighbors_2hop = torch.load(file)
-
-entity_embeddings_copied = deepcopy(entity_embeddings)
-relation_embeddings_copied = deepcopy(relation_embeddings)
+# entity_embeddings_copied = deepcopy(entity_embeddings)
+# relation_embeddings_copied = deepcopy(relation_embeddings)
 
 print("Initial entity dimensions {} , relation dimensions {}".format(
     entity_embeddings.size(), relation_embeddings.size()))
@@ -283,7 +283,7 @@ def train_gat(args):
         epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
 
         if (epoch > args.epochs_gat - 3):
-            save_model(model_gat, args.data, epoch, args.output_folder)
+            save_model(model_gat, args.data_folder, epoch, args.output_folder)
 
 
 def train_conv(args):
@@ -303,7 +303,7 @@ def train_conv(args):
         model_gat.cuda()
 
     model_gat.load_state_dict(torch.load(
-        '{}/trained_{}.pth'.format(args.output_folder, args.epochs_gat - 1)), strict=False)
+        '{}/trained_{}.pt'.format(args.output_folder, args.epochs_gat - 1)), strict=False)
     model_conv.final_entity_embeddings = model_gat.final_entity_embeddings
     model_conv.final_relation_embeddings = model_gat.final_relation_embeddings
 
@@ -372,7 +372,7 @@ def train_conv(args):
         #     epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
         epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
         if (epoch > args.epochs_conv - 3):
-            save_model(model_conv, args.data, epoch, args.output_folder)
+            save_model(model_conv, args.data_folder, epoch, args.output_folder)
 
     torch.save(epoch_losses, args.output_folder + "epoch_losses_conv.pt")
 
@@ -382,7 +382,7 @@ def evaluate_conv(args, unique_entities):
                                  args.drop_GAT, args.drop_conv, args.alpha, args.alpha_conv,
                                  args.nheads_GAT, args.out_channels)
     model_conv.load_state_dict(torch.load(
-        '{0}trained_{1}.pth'.format(args.output_folder, args.epochs_conv - 1)), strict=False)
+        '{0}trained_{1}.pt'.format(args.output_folder, args.epochs_conv - 1)), strict=False)
 
     model_conv.cuda()
     model_conv.eval()

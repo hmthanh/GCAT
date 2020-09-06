@@ -25,12 +25,12 @@ CUDA = torch.cuda.is_available()
 
 def save_model(model, name, epoch, folder_name, args=None):
     print("Saving Model")
-    if args is not None and args.drive_folder is not None:
+    if args.save_gdrive:
         torch.save(model.state_dict(),
                    (args.drive_folder + "trained_{}.pt").format(epoch))
     else:
         torch.save(model.state_dict(),
-                   (folder_name + "trained_{}.pt").format(epoch))
+                   (args.output_folder + "trained_{}.pt").format(epoch))
     print("Done saving Model")
 
 

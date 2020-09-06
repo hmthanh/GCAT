@@ -1,0 +1,35 @@
+{
+    "dataset": "WN18RR",
+    "data_folder": "./data/WN18RR/",
+    "output_folder": "./output/",
+    "save_gdrive": true,
+    "cuda": false,
+    "epochs_gat": 3600,
+    "epochs_conv": 200,
+    "weight_decay_gat": 5e-06,
+    "weight_decay_conv": 1e-05,
+    "pretrained_emb": true,
+    "embedding_size": 50,
+    "lr": 0.001,
+    "get_2hop": true,
+    "use_2hop": true,
+    "partial_2hop": false,
+    "batch_size_gat": 86835,
+    "valid_invalid_ratio_gat": 2,
+    "drop_GAT": 0.3,
+    "alpha": 0.2,
+    "entity_out_dim": [
+        100,
+        200
+    ],
+    "nheads_GAT": [
+        2,
+        2
+    ],
+    "margin": 5,
+    "batch_size_conv": 128,
+    "alpha_conv": 0.2,
+    "valid_invalid_ratio_conv": 40,
+    "out_channels": 500,
+    "drop_conv": 0.0
+}
