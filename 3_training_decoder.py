@@ -2,22 +2,10 @@ import torch
 
 from models import SpKBGATModified, SpKBGATConvOnly
 from torch.autograd import Variable
-import torch.nn as nn
-import torch.nn.functional as F
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
-from copy import deepcopy
-
-from preprocess import read_entity_from_id, read_relation_from_id, init_embeddings, build_data
-from create_batch import Corpus
 from utils import save_model
 
 import random
-import argparse
-import os
-import sys
-import logging
 import time
 from create_config import Config
 
@@ -25,10 +13,10 @@ args = Config()
 args.load_config()
 
 print("Loading corpus")
-
-Corpus_ = torch.load(args.data_folder + "Corpus_torch.pt")
-entity_embeddings = torch.load(args.data_folder + "entity_embeddings.pt")
-relation_embeddings = torch.load(args.data_folder + "relation_embeddings.pt")
+device = "gpu" if args.cuda else "cpu"
+Corpus_ = torch.load("{output}corpus_{device}.pt".format(output=args.data_folder, device=device))
+entity_embeddings = torch.load("{output}entity_embeddings_{device}.pt".format(output=args.data_folder, device=device))
+relation_embeddings = torch.load("{output}relation_embeddings_{device}.pt".format(output=args.data_folder, device=device))
 node_neighbors_2hop = Corpus_.node_neighbors_2hop
 
 print("Defining model")
@@ -118,3 +106,5 @@ for epoch in range(args.epochs_conv):
         save_model(model_conv, args.data_folder, epoch, args.output_folder)
 
 torch.save(epoch_losses, args.output_folder + "epoch_losses_conv.pt")
+
+print("3. Train Decoder Successfully !")
