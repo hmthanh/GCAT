@@ -35,8 +35,8 @@ class Config(object):
         self.dataset = dataset
         self.data_folder = data_folder
         self.output_folder = output_folder
-        self.save_gdrive = save_gdrive
         self.drive_folder = drive_folder
+        self.save_gdrive = save_gdrive
         self.cuda = cuda
         self.device = device
 
