@@ -5,7 +5,6 @@
     "save_gdrive": false,
     "drive_folder": "/content/drive/My Drive",
     "cuda": false,
-    "device": "cpu",
     "epochs_gat": 1,
     "epochs_conv": 1,
     "weight_decay_gat": 5e-06,
