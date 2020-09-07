@@ -2,11 +2,30 @@
 
 Graph Collaborate Attention Network
 
+I modify from KBGAT (https://github.com/deepakn97/relationPrediction )
 
-## Instalation
+## Structure
+
+```
+Root
+├── data
+│   └── {dataset*} // Dataset
+│   │   ├── train.txt
+│   │   ├── test.txt
+│   │   └──valid.txt
+├── output
+│   ├── {dataset*} // Result training of each dataset
+│   │   ├── WN18RR_cuda_gat_3599.pt ~ "{dataset}_{device}_{model-name}_{last-epoch}"
+│   │   └── WN18RR_cuda_result.txt
+├── config.json # Config for traning
+└── *.py # Source code
+└── README.md
+```
 
 
 ## Installation
+
+Public Colab : https://drive.google.com/file/d/1uVd_w6vE5C70rmgKLI7BvnhCWegXTMhk/view?usp=sharing
 
 #### Requirements
 
