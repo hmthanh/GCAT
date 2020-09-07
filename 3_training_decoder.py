@@ -69,8 +69,7 @@ for epoch in range(args.epochs_conv):
     else:
         num_iters_per_epoch = (len(Corpus_.train_indices) // args.batch_size_conv) + 1
 
-    #for iters in range(num_iters_per_epoch):
-    for iters in range(1):
+    for iters in range(num_iters_per_epoch):
         start_time_iter = time.time()
         train_indices, train_values = Corpus_.get_iteration_batch(iters)
 
