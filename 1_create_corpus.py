@@ -21,8 +21,7 @@ print("headTailSelector", len(headTailSelector))
 print("unique_entities_train", np.array(unique_entities_train).shape, "\n")
 
 if args.pretrained_emb:
-    entity_embeddings, relation_embeddings = init_embeddings(os.path.join(args.data_folder, 'entity2vec.txt'),
-                                                             os.path.join(args.data_folder, 'relation2vec.txt'))
+    entity_embeddings, relation_embeddings = init_embeddings()
     print("Initialised relations and entities from TransE")
 
 else:

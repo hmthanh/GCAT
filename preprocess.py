@@ -8,9 +8,9 @@ args.load_config()
 
 
 def read_entity_from_id():
-    file_name= "{folder}/{dataset}/entity2id.txt".format(folder=args.data_folder, dataset=args.dataset)
+    folder = "{data_folder}/{dataset}/".format(data_folder=args.data_folder, dataset=args.dataset)
     entity2id = {}
-    with open(file_name, 'r') as f:
+    with open(folder + "entity2id.txt", 'r') as f:
         for line in f:
             if len(line.strip().split()) > 1:
                 entity, entity_id = line.strip().split(
@@ -20,9 +20,9 @@ def read_entity_from_id():
 
 
 def read_relation_from_id():
-    file_name = "{folder}/{dataset}/relation2id.txt".format(folder=args.data_folder, dataset=args.dataset)
+    folder = "{data_folder}/{dataset}/".format(data_folder=args.data_folder, dataset=args.dataset)
     relation2id = {}
-    with open(file_name, 'r') as f:
+    with open(folder + "relation2id.txt", 'r') as f:
         for line in f:
             if len(line.strip().split()) > 1:
                 relation, relation_id = line.strip().split(
@@ -31,7 +31,10 @@ def read_relation_from_id():
     return relation2id
 
 
-def init_embeddings(entity_file, relation_file):
+def init_embeddings():
+    folder = "{data_folder}/{dataset}/".format(data_folder=args.data_folder, dataset=args.dataset)
+    entity_file = folder + 'entity2vec.txt'
+    relation_file = folder + 'relation2vec.txt'
     entity_emb, relation_emb = [], []
 
     with open(entity_file) as f:
@@ -130,7 +133,6 @@ def build_data(path='./data', is_unweigted=False, directed=True):
         right_entity[relation2id[relation]][entity2id[e2]] += 1
 
     left_entity_avg = {}
-    print("left_entity", left_entity)
     for i in range(len(relation2id)):
         if i not in left_entity.keys():
             left_entity[i] = {}
