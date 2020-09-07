@@ -9,7 +9,6 @@ from create_config import Config
 
 args = Config()
 args.load_config()
-device = torch.device("cuda:0" if args.cuda else "cpu")
 
 train_data, validation_data, test_data, entity2id, relation2id, headTailSelector, unique_entities_train = build_data(args.data_folder, is_unweigted=False, directed=True)
 (test_triples, test_adjacency_mat) = test_data

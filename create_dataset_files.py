@@ -1,6 +1,10 @@
 import numpy as np
+from create_config import Config
+args = Config()
+args.load_config()
 
-def getID(folder='data/WN18RR/'):
+def getID():
+    folder = "{path}/{dataset}/".format(path=args.data_folder, dataset=args.dataset)
     lstEnts = {}
     lstRels = {}
     with open(folder + 'train.txt') as f, open(folder + 'train_marked.txt', 'w') as f2:
