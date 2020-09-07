@@ -4,3 +4,4 @@ wn_test
 screenlog.0
 .ipynb_checkpoints/
 __pycache__
+.idea
