@@ -10,7 +10,7 @@ from utils import save_txt
 args = Config()
 args.load_config()
 
-device = torch.device("cuda:0" if args.cuda else "cpu")
+device = "cuda" if args.cuda else "cpu"
 
 class Corpus:
     def __init__(self, args, train_data, validation_data, test_data, entity2id,

@@ -5,7 +5,7 @@ from utils import load_object
 
 args = Config()
 args.load_config()
-device = torch.device("cuda:0" if args.cuda else "cpu")
+device = "cuda" if args.cuda else "cpu"
 
 print("Loading corpus")
 Corpus_ = load_object(output=args.data_folder, name="corpus")
@@ -13,11 +13,13 @@ entity_embeddings = load_object(output=args.data_folder, name="entity_embeddings
 relation_embeddings = load_object(output=args.data_folder, name="relation_embeddings")
 node_neighbors_2hop = Corpus_.node_neighbors_2hop
 
-print("Defining model")
+print("Loading model")
 model_conv = SpKBGATConvOnly(entity_embeddings, relation_embeddings, args.entity_out_dim, args.entity_out_dim,
                              args.drop_GAT, args.drop_conv, args.alpha, args.alpha_conv,
                              args.nheads_GAT, args.out_channels)
-
+folder = "{output}/{dataset}".format(output=args.output_folder, dataset=args.dataset)
+model_name = "{folder}/{dataset}_{device}_{name}_{epoch}.pt".format(folder=folder, dataset=args.dataset, device=device, name="conv", epoch=args.epochs_conv - 1)
+model_conv.load_state_dict(torch.load(model_name), strict=False)
 if args.cuda:
     model_conv.cuda()
 

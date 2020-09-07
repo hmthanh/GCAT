@@ -2,6 +2,7 @@ import numpy as np
 from create_config import Config
 args = Config()
 args.load_config()
+device = "cuda" if args.cuda else "cpu"
 
 def getID():
     folder = "{path}/{dataset}/".format(path=args.data_folder, dataset=args.dataset)

@@ -8,7 +8,7 @@ from torch.autograd import Variable
 from create_config import Config
 args = Config()
 args.load_config()
-device = torch.device("cuda:0" if args.cuda else "cpu")
+device = "cuda" if args.cuda else "cpu"
 
 class ConvKB(nn.Module):
     def __init__(self, input_dim, input_seq_len, in_channels, out_channels, drop_prob, alpha_leaky):
@@ -62,7 +62,7 @@ class SpecialSpmmFunctionFinal(torch.autograd.Function):
             edge_sources = ctx.indices
 
             if args.cuda:
-                edge_sources = edge_sources.cuda()
+                edge_sources = edge_sources.to(device)
 
             grad_values = grad_output[edge_sources]
             # grad_values = grad_values.view(ctx.E, ctx.outfeat)

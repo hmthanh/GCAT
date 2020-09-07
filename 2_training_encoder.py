@@ -12,7 +12,7 @@ from create_config import Config
 
 args = Config()
 args.load_config()
-device = torch.device("cuda:0" if args.cuda else "cpu")
+device = "cuda" if args.cuda else "cpu"
 
 print("Loading corpus")
 Corpus_ = load_object(args.data_folder, "corpus")

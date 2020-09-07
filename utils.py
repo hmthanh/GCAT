@@ -9,19 +9,20 @@ from create_config import Config
 
 args = Config()
 args.load_config()
-device = "gpu" if args.cuda else "cpu"
+device = "cuda" if args.cuda else "cpu"
 
 def save_model(model, name, epoch):
     output = args.output_folder
 
-    modeL_name = "{name}_{epoch}".format(name=name, epoch=epoch)
-    save_object(model.state_dict(), output, modeL_name)
+    model_name = "{name}_{epoch}".format(name=name, epoch=epoch)
+    save_object(model.state_dict(), output, model_name)
     print("Done saving model {name}".format(name=name))
 
 
 def load_model(name, epoch):
     output = args.output_folder
-
+    # folder = "{output}/{dataset}".format(output=args.output_folder, dataset=args.dataset)
+    # model_name = "{folder}/{dataset}_{device}_{name}_{epoch}.pt".format(folder=folder, dataset=args.dataset, device=device, name="gat", epoch=args.epochs_gat - 1)
     model_name = "{name}_{epoch}".format(name=name, epoch=epoch)
     load_object(output=output, name=model_name)
     print("Done loading model {name}".format(name=name))
@@ -38,8 +39,10 @@ def load_object(output, name):
     folder = "{output}/{dataset}".format(output=output, dataset=args.dataset)
     if args.save_gdrive:
         folder = args.drive_folder
-    return torch.load(
-        "{folder}/{dataset}_{device}_{name}.pt".format(folder=folder, dataset=args.dataset, name=name, device=device))
+    
+    file_path = "{folder}/{dataset}_{device}_{name}.pt".format(folder=folder, dataset=args.dataset, name=name, device=device)
+    # print(file_path)
+    return torch.load(file_path)
 
 
 def save_txt(output, file, lines):

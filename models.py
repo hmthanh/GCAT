@@ -8,6 +8,7 @@ from create_config import Config
 
 args = Config()
 args.load_config()
+device = "cuda" if args.cuda else "cpu"
 
 class SpGAT(nn.Module):
     def __init__(self, num_nodes, nfeat, nhid, relation_dim, dropout, alpha, nheads):
@@ -122,10 +123,10 @@ class SpKBGATModified(nn.Module):
             [train_indices_nhop[:, 1].unsqueeze(-1), train_indices_nhop[:, 2].unsqueeze(-1)], dim=1)
 
         if args.cuda:
-            edge_list = edge_list.cuda()
-            edge_type = edge_type.cuda()
-            edge_list_nhop = edge_list_nhop.cuda()
-            edge_type_nhop = edge_type_nhop.cuda()
+            edge_list = edge_list.to(device)
+            edge_type = edge_type.to(device)
+            edge_list_nhop = edge_list_nhop.to(device)
+            edge_type_nhop = edge_type_nhop.to(device)
 
         edge_embed = self.relation_embeddings[edge_type]
 
@@ -145,8 +146,8 @@ class SpKBGATModified(nn.Module):
         mask = torch.zeros(self.entity_embeddings.shape[0])
         mask[mask_indices] = 1.0
         if args.cuda:
-            mask_indices.cuda()
-            mask.cuda()
+            mask_indices.to(device)
+            mask.to(device)
 
         entities_upgraded = self.entity_embeddings.mm(self.W_entities)
         out_entity_1 = entities_upgraded + \

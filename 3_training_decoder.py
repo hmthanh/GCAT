@@ -10,7 +10,7 @@ from create_config import Config
 
 args = Config()
 args.load_config()
-device = torch.device("cuda:0" if args.cuda else "cpu")
+device = "cuda" if args.cuda else "cpu"
 
 print("Loading corpus")
 Corpus_ = load_object(output=args.data_folder, name="corpus")
@@ -30,8 +30,9 @@ if args.cuda:
     model_gat.cuda()
 
 print("Loading GAT encoder")
-model = load_model("gat", epoch=args.epochs_gat - 1)
-#model_gat.load_state_dict(model, strict=False)
+folder = "{output}/{dataset}".format(output=args.output_folder, dataset=args.dataset)
+model_name = "{folder}/{dataset}_{device}_{name}_{epoch}.pt".format(folder=folder, dataset=args.dataset, device=device, name="gat", epoch=args.epochs_gat - 1)
+model_gat.load_state_dict(torch.load(model_name), strict=False)
 
 print("Only Conv model trained")
 model_conv.final_entity_embeddings = model_gat.final_entity_embeddings
