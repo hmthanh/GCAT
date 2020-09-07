@@ -148,6 +148,7 @@ class SpKBGATModified(nn.Module):
         if args.cuda:
             mask_indices.to(device)
             mask.to(device)
+            out_entity_1.to(device)
 
         entities_upgraded = self.entity_embeddings.mm(self.W_entities)
         out_entity_1 = entities_upgraded + \
