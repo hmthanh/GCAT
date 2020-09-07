@@ -75,7 +75,7 @@ All config store in `config.json` file
 
 #### Run
 
-Because we use Google Colab for traning, if you training with larger device, just run `python main.py`
+Because we use Google Colab for training, if you training with larger device, just run `python main.py`
 
 * Step 1 : Create corpus
 
