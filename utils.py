@@ -9,8 +9,7 @@ from create_config import Config
 
 args = Config()
 args.load_config()
-device = torch.device("cuda:0" if args.cuda else "cpu")
-
+device = "gpu" if args.cuda else "cpu"
 
 def save_model(model, name, epoch):
     output = args.output_folder
@@ -32,8 +31,7 @@ def save_object(obj, output, name):
     folder = "{output}/{dataset}".format(output=output, dataset=args.dataset)
     if args.save_gdrive:
         folder = args.drive_folder
-    torch.save(obj, "{folder}/{dataset}_{device}_{name}.pt".format(folder=folder, dataset=args.dataset, name=name,
-                                                                   device=args.device))
+    torch.save(obj, "{folder}/{dataset}_{device}_{name}.pt".format(folder=folder, dataset=args.dataset, name=name, device=device))
 
 
 def load_object(output, name):
@@ -41,8 +39,7 @@ def load_object(output, name):
     if args.save_gdrive:
         folder = args.drive_folder
     return torch.load(
-        "{folder}/{dataset}_{device}_{name}.pt".format(folder=folder, dataset=args.dataset, name=name,
-                                                                 device=args.device))
+        "{folder}/{dataset}_{device}_{name}.pt".format(folder=folder, dataset=args.dataset, name=name, device=device))
 
 
 def save_txt(output, file, lines):
@@ -50,7 +47,7 @@ def save_txt(output, file, lines):
     if args.save_gdrive:
         folder = args.drive_folder
     txt_name = "{folder}/{dataset}_{device}_{file}".format(folder=folder, dataset=args.dataset, file=file,
-                                                           device=args.device)
+                                                           device=device)
     with open(txt_name, "w") as f:
         f.write(lines)
 
@@ -60,7 +57,7 @@ def load_txt(output, file="result"):
     if args.save_gdrive:
         folder = args.drive_folder
     txt_name = "{folder}/{dataset}_{device}_{file}".format(folder=folder, dataset=args.dataset, file=file,
-                                                           device=args.device)
+                                                           device=device)
     with open(txt_name) as f:
         return f.read()
 
@@ -90,8 +87,9 @@ def GAT_Loss(train_indices, valid_invalid_ratio):
     x = source_embeds + relation_embeds - tail_embeds
     neg_norm = torch.norm(x, p=2, dim=1)
 
+    torch_device = torch.device("cuda:0" if args.cuda else "cpu")
     y = torch.ones(int(args.valid_invalid_ratio)
-                   * len_pos_triples, device=device)
+                   * len_pos_triples, device=torch_device)
     loss = gat_loss_func(pos_norm, neg_norm, y)
     return loss
 

@@ -5,9 +5,10 @@ import time
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-
-CUDA = torch.cuda.is_available()
-
+from create_config import Config
+args = Config()
+args.load_config()
+device = torch.device("cuda:0" if args.cuda else "cpu")
 
 class ConvKB(nn.Module):
     def __init__(self, input_dim, input_seq_len, in_channels, out_channels, drop_prob, alpha_leaky):
@@ -60,7 +61,7 @@ class SpecialSpmmFunctionFinal(torch.autograd.Function):
         if ctx.needs_input_grad[1]:
             edge_sources = ctx.indices
 
-            if(CUDA):
+            if args.cuda:
                 edge_sources = edge_sources.cuda()
 
             grad_values = grad_output[edge_sources]
