@@ -1,11 +1,16 @@
 import torch
 import os
 import numpy as np
+from create_config import Config
+
+args = Config()
+args.load_config()
 
 
-def read_entity_from_id(filename='./data/WN18RR/entity2id.txt'):
+def read_entity_from_id():
+    file_name= "{folder}/{dataset}/entity2id.txt".format(folder=args.data_folder, dataset=args.dataset)
     entity2id = {}
-    with open(filename, 'r') as f:
+    with open(file_name, 'r') as f:
         for line in f:
             if len(line.strip().split()) > 1:
                 entity, entity_id = line.strip().split(
@@ -14,9 +19,10 @@ def read_entity_from_id(filename='./data/WN18RR/entity2id.txt'):
     return entity2id
 
 
-def read_relation_from_id(filename='./data/WN18RR/relation2id.txt'):
+def read_relation_from_id():
+    file_name = "{folder}/{dataset}/relation2id.txt".format(folder=args.data_folder, dataset=args.dataset)
     relation2id = {}
-    with open(filename, 'r') as f:
+    with open(file_name, 'r') as f:
         for line in f:
             if len(line.strip().split()) > 1:
                 relation, relation_id = line.strip().split(
@@ -85,24 +91,25 @@ def load_data(filename, entity2id, relation2id, is_unweigted=False, directed=Tru
     return triples_data, (rows, cols, data), list(unique_entities)
 
 
-def build_data(path='./data/WN18RR/', is_unweigted=False, directed=True):
-    entity2id = read_entity_from_id(path + 'entity2id.txt')
-    relation2id = read_relation_from_id(path + 'relation2id.txt')
+def build_data(path='./data', is_unweigted=False, directed=True):
+    entity2id = read_entity_from_id()
+    relation2id = read_relation_from_id()
+    folder = "{path}/{dataset}/".format(path=path, dataset=args.dataset)
 
     # Adjacency matrix only required for training phase
     # Currenlty creating as unweighted, undirected
     train_triples, train_adjacency_mat, unique_entities_train = load_data(os.path.join(
-        path, 'train.txt'), entity2id, relation2id, is_unweigted, directed)
+        folder, 'train.txt'), entity2id, relation2id, is_unweigted, directed)
     validation_triples, valid_adjacency_mat, unique_entities_validation = load_data(
-        os.path.join(path, 'valid.txt'), entity2id, relation2id, is_unweigted, directed)
+        os.path.join(folder, 'valid.txt'), entity2id, relation2id, is_unweigted, directed)
     test_triples, test_adjacency_mat, unique_entities_test = load_data(os.path.join(
-        path, 'test.txt'), entity2id, relation2id, is_unweigted, directed)
+        folder, 'test.txt'), entity2id, relation2id, is_unweigted, directed)
 
     id2entity = {v: k for k, v in entity2id.items()}
     id2relation = {v: k for k, v in relation2id.items()}
     left_entity, right_entity = {}, {}
 
-    with open(os.path.join(path, 'train.txt')) as f:
+    with open(os.path.join(folder, 'train.txt')) as f:
         lines = f.readlines()
 
     for line in lines:
@@ -125,20 +132,26 @@ def build_data(path='./data/WN18RR/', is_unweigted=False, directed=True):
     left_entity_avg = {}
     print("left_entity", left_entity)
     for i in range(len(relation2id)):
-        print(i, "dsf")
-        print("len(left_entity[i])", i, " i ", len(left_entity[i]))
-        print("left_entity[{index}]".format(index = i), left_entity[i])
-        left_entity_avg[i] = sum(left_entity[i].values()) * 1.0 / len(left_entity[i])
+        if i not in left_entity.keys():
+            left_entity[i] = {}
+            left_entity_avg[i] = 0
+        else:
+            left_entity_avg[i] = sum(left_entity[i].values()) * 1.0 / len(left_entity[i])
 
     right_entity_avg = {}
     for i in range(len(relation2id)):
-        right_entity_avg[i] = sum(
-            right_entity[i].values()) * 1.0 / len(right_entity[i])
+        if i not in right_entity.keys():
+            right_entity[i] = {}
+            right_entity_avg[i] = 0
+        else:
+            right_entity_avg[i] = sum(right_entity[i].values()) * 1.0 / len(right_entity[i])
 
     headTailSelector = {}
     for i in range(len(relation2id)):
-        headTailSelector[i] = 1000 * right_entity_avg[i] / \
-            (right_entity_avg[i] + left_entity_avg[i])
+        if left_entity_avg[i] == 0 and right_entity_avg[i] == 0:
+            headTailSelector[i] = 0
+        else:
+            headTailSelector[i] = 1000 * right_entity_avg[i] / (right_entity_avg[i] + left_entity_avg[i])
 
     return (train_triples, train_adjacency_mat), (validation_triples, valid_adjacency_mat), (test_triples, test_adjacency_mat), \
         entity2id, relation2id, headTailSelector, unique_entities_train

@@ -379,6 +379,9 @@ class Corpus:
 
             for i in range(batch_indices.shape[0]):
                 print(len(ranks_head))
+                if len(ranks_head) == 0:
+                    break
+
                 start_time_it = time.time()
                 new_x_batch_head = np.tile(
                     batch_indices[i, :], (len(self.entity2id), 1))
@@ -499,6 +502,8 @@ class Corpus:
 
             assert len(ranks_head) == len(reciprocal_ranks_head)
             assert len(ranks_tail) == len(reciprocal_ranks_tail)
+            if len(ranks_head) == 0:
+                break
             print("here {}".format(len(ranks_head)))
             print("\nCurrent iteration time {}".format(time.time() - start_time))
             print("Stats for replacing head are -> ")
@@ -535,6 +540,8 @@ class Corpus:
             average_mean_recip_rank_tail.append(
                 sum(reciprocal_ranks_tail) / len(reciprocal_ranks_tail))
 
+        if len(average_hits_at_ten_head) == 0:
+            return None
         print("\nAveraged stats for replacing head are -> \n")
         print("Hits@10 are {}\n".format(sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)))
         print("Hits@3 are {}\n".format(sum(average_hits_at_three_head) / len(average_hits_at_three_head)))
@@ -588,7 +595,4 @@ class Corpus:
         lines += "Mean rank {}\n".format(cumulative_mean_rank)
         lines += "Mean Reciprocal Rank {}\n".format(cumulative_mean_recip_rank)
 
-        output = args.output_folder
-        if args.save_gdrive:
-            output = args.drive_folder
-        save_txt(output, "result", lines)
+        save_txt(output=args.output_folder, file="result", lines=lines)

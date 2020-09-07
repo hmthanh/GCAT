@@ -38,11 +38,7 @@ Corpus_ = Corpus(args, train_data, validation_data, test_data, entity2id, relati
 entity_embeddings = torch.FloatTensor(entity_embeddings)
 relation_embeddings = torch.FloatTensor(relation_embeddings)
 
-output = args.data_folder
-if args.save_gdrive:
-    output= args.drive_folder
-    
-save_object(Corpus_, output=output, name="corpus")
-save_object(entity_embeddings, output=output, name="entity_embeddings")
-save_object(relation_embeddings, output=output, name="relation_embeddings")
+save_object(Corpus_, output=args.data_folder, name="corpus")
+save_object(entity_embeddings, output=args.data_folder, name="entity_embeddings")
+save_object(relation_embeddings, output=args.data_folder, name="relation_embeddings")
 print("1. Created Corpus Successfully !")

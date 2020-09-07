@@ -15,13 +15,9 @@ args.load_config()
 device = torch.device("cuda:0" if args.cuda else "cpu")
 
 print("Loading corpus")
-output = args.data_folder
-if args.save_gdrive:
-    output = args.drive_folder
-
-Corpus_ = load_object(output, "corpus")
-entity_embeddings = load_object(output, "entity_embeddings")
-relation_embeddings = load_object(output, "relation_embeddings")
+Corpus_ = load_object(args.data_folder, "corpus")
+entity_embeddings = load_object(args.data_folder, "entity_embeddings")
+relation_embeddings = load_object(args.data_folder, "relation_embeddings")
 node_neighbors_2hop = Corpus_.node_neighbors_2hop
 
 print("Defining model")
@@ -31,7 +27,6 @@ if args.cuda:
     model_gat.cuda()
 
 print("Defining loss")
-
 
 def batch_gat_loss(gat_loss_func, train_indices, entity_embed, relation_embed):
     len_pos_triples = int(
@@ -76,10 +71,9 @@ current_batch_2hop_indices = torch.tensor([])
 if(args.use_2hop):
     current_batch_2hop_indices = Corpus_.get_batch_nhop_neighbors_all(args, Corpus_.unique_entities_train, node_neighbors_2hop)
 
+current_batch_2hop_indices = Variable(torch.LongTensor(current_batch_2hop_indices))
 if args.cuda:
-    current_batch_2hop_indices = Variable(torch.LongTensor(current_batch_2hop_indices)).cuda()
-else:
-    current_batch_2hop_indices = Variable(torch.LongTensor(current_batch_2hop_indices))
+    current_batch_2hop_indices.cuda()
 
 epoch_losses = []   # losses of all epochs
 print("Number of epochs {}".format(args.epochs_gat))
@@ -139,9 +133,6 @@ for epoch in range(args.epochs_gat):
     if epoch >= args.epochs_gat - 1:
         save_model(model_gat, name="gat", epoch=epoch)
 
-output=args.output_folder
-if args.save_gdrive:
-    output=args.drive_folder
-save_object(epoch_losses, output_folder=output, name="loss_gat")
+save_object(epoch_losses, output=args.output_folder, name="loss_gat")
 
 print("2. Train Encoder Successfully !")

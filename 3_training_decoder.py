@@ -13,12 +13,9 @@ args.load_config()
 device = torch.device("cuda:0" if args.cuda else "cpu")
 
 print("Loading corpus")
-output=args.data_folder
-if args.save_gdrive:
-    output=args.drive_folder
-Corpus_ = load_object(output_folder=output, name="corpus")
-entity_embeddings = load_object(output_folder=output, name="entity_embeddings")
-relation_embeddings = load_object(output_folder=output, name="relation_embeddings")
+Corpus_ = load_object(output=args.data_folder, name="corpus")
+entity_embeddings = load_object(output=args.data_folder, name="entity_embeddings")
+relation_embeddings = load_object(output=args.data_folder, name="relation_embeddings")
 node_neighbors_2hop = Corpus_.node_neighbors_2hop
 
 print("Defining model")
@@ -107,9 +104,6 @@ for epoch in range(args.epochs_conv):
     if epoch >= args.epochs_conv - 1:
         save_model(model_conv, name="conv", epoch=epoch)
 
-output=args.output_folder
-if args.save_gdrive:
-    output=args.drive_folder
-save_object(epoch_losses, output_folder=output, name="loss_conv")
+save_object(epoch_losses, output=args.output_folder, name="loss_conv")
 
 print("3. Train Decoder Successfully !")

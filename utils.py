@@ -1,21 +1,9 @@
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
 # from torchviz import make_dot, make_dot_from_trace
-from models import SpKBGATModified, SpKBGATConvOnly
-from layers import ConvKB
-from torch.autograd import Variable
 import torch.nn as nn
-import numpy as np
-import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from copy import deepcopy
-
-from preprocess import read_entity_from_id, read_relation_from_id, init_embeddings, build_data
-import random
-import argparse
-import os
-import logging
-import time
-import pickle
 
 from create_config import Config
 
@@ -23,45 +11,59 @@ args = Config()
 args.load_config()
 device = torch.device("cuda:0" if args.cuda else "cpu")
 
-@staticmethod
+
 def save_model(model, name, epoch):
     output = args.output_folder
-    if args.save_gdrive:
-        output = args.drive_folder
-    
+
     modeL_name = "{name}_{epoch}".format(name=name, epoch=epoch)
     save_object(model.state_dict(), output, modeL_name)
     print("Done saving model {name}".format(name=name))
 
-@staticmethod
+
 def load_model(name, epoch):
     output = args.output_folder
-    if args.save_gdrive:
-        output = args.drive_folder
-    
+
     model_name = "{name}_{epoch}".format(name=name, epoch=epoch)
-    load_object(output_folder=output, name=model_name)
-    print("Done loading model {name}".format(name=name))    
+    load_object(output=output, name=model_name)
+    print("Done loading model {name}".format(name=name))
 
-@staticmethod
-def save_object(object, output_folder, name):
-    torch.save(object, "{output}{dataset}_{device}_{name}.pt".format(output=output_folder, dataset=args.dataset, name=name, device=args.device))
 
-@staticmethod
-def load_object(output_folder, name):
-    return torch.load("{output}{dataset}_{device}_{name}.pt".format(output=output_folder, dataset=args.dataset, name=name, device=args.device))
+def save_object(obj, output, name):
+    folder = "{output}/{dataset}".format(output=output, dataset=args.dataset)
+    if args.save_gdrive:
+        folder = args.drive_folder
+    torch.save(obj, "{folder}/{dataset}_{device}_{name}.pt".format(folder=folder, dataset=args.dataset, name=name,
+                                                                   device=args.device))
 
-@staticmethod
+
+def load_object(output, name):
+    folder = "{output}/{dataset}".format(output=output, dataset=args.dataset)
+    if args.save_gdrive:
+        folder = args.drive_folder
+    return torch.load(
+        "{folder}/{dataset}_{device}_{name}.pt".format(folder=folder, dataset=args.dataset, name=name,
+                                                                 device=args.device))
+
+
 def save_txt(output, file, lines):
-    txt_name = "{output}{dataset}_{device}_{file}".format(output=output, dataset=args.dataset, file=file, device=args.device)
+    folder = "{output}/{dataset}".format(output=output, dataset=args.dataset)
+    if args.save_gdrive:
+        folder = args.drive_folder
+    txt_name = "{folder}/{dataset}_{device}_{file}".format(folder=folder, dataset=args.dataset, file=file,
+                                                           device=args.device)
     with open(txt_name, "w") as f:
         f.write(lines)
 
-@staticmethod       
+
 def load_txt(output, file="result"):
-    txt_name = "{output}{dataset}_{device}_{file}".format(output=output, dataset=args.dataset, file=file, device=args.device)
+    folder = "{output}/{dataset}".format(output=output, dataset=args.dataset)
+    if args.save_gdrive:
+        folder = args.drive_folder
+    txt_name = "{folder}/{dataset}_{device}_{file}".format(folder=folder, dataset=args.dataset, file=file,
+                                                           device=args.device)
     with open(txt_name) as f:
         return f.read()
+
 
 gat_loss_func = nn.MarginRankingLoss(margin=0.5)
 
@@ -128,7 +130,7 @@ def plot_grad_flow(named_parameters, parameters):
     layers = []
 
     for n, p in zip(named_parameters, parameters):
-        if(p.requires_grad) and ("bias" not in n):
+        if (p.requires_grad) and ("bias" not in n):
             layers.append(n)
             ave_grads.append(p.grad.abs().mean())
             max_grads.append(p.grad.abs().max())
@@ -154,7 +156,7 @@ def plot_grad_flow_low(named_parameters, parameters):
     layers = []
     for n, p in zip(named_parameters, parameters):
         # print(n)
-        if(p.requires_grad) and ("bias" not in n):
+        if (p.requires_grad) and ("bias" not in n):
             layers.append(n)
             ave_grads.append(p.grad.abs().mean())
     plt.plot(ave_grads, alpha=0.3, color="b")
