@@ -21,10 +21,7 @@ relation_embeddings = load_object(args.data_folder, "relation_embeddings")
 node_neighbors_2hop = Corpus_.node_neighbors_2hop
 
 print("Defining model")
-model_gat = SpKBGATModified(entity_embeddings, relation_embeddings, args.entity_out_dim, args.entity_out_dim, args.drop_GAT, args.alpha, args.nheads_GAT)
-
-if args.cuda:
-    model_gat.cuda()
+model_gat = SpKBGATModified(entity_embeddings, relation_embeddings, args.entity_out_dim, args.entity_out_dim, args.drop_GAT, args.alpha, args.nheads_GAT).to(device)
 
 print("Defining loss")
 
@@ -51,9 +48,7 @@ def batch_gat_loss(gat_loss_func, train_indices, entity_embed, relation_embed):
     x = source_embeds + relation_embeds - tail_embeds
     neg_norm = torch.norm(x, p=1, dim=1)
 
-    y = -torch.ones(int(args.valid_invalid_ratio_gat) * len_pos_triples)
-    if args.cuda:
-        y.cuda()
+    y = -torch.ones(int(args.valid_invalid_ratio_gat) * len_pos_triples).to(device)
 
     gat_loss = gat_loss_func(pos_norm, neg_norm, y)
     return gat_loss
@@ -71,9 +66,7 @@ current_batch_2hop_indices = torch.tensor([])
 if(args.use_2hop):
     current_batch_2hop_indices = Corpus_.get_batch_nhop_neighbors_all(args, Corpus_.unique_entities_train, node_neighbors_2hop)
 
-current_batch_2hop_indices = Variable(torch.LongTensor(current_batch_2hop_indices))
-if args.cuda:
-    current_batch_2hop_indices.cuda()
+current_batch_2hop_indices = Variable(torch.LongTensor(current_batch_2hop_indices)).to(device)
 
 epoch_losses = []   # losses of all epochs
 print("Number of epochs {}".format(args.epochs_gat))
@@ -99,14 +92,8 @@ for epoch in range(args.epochs_gat):
         start_time_iter = time.time()
         train_indices, train_values = Corpus_.get_iteration_batch(iters)
 
-        if args.cuda:
-            train_indices = Variable(
-                torch.LongTensor(train_indices)).cuda()
-            train_values = Variable(torch.FloatTensor(train_values)).cuda()
-
-        else:
-            train_indices = Variable(torch.LongTensor(train_indices))
-            train_values = Variable(torch.FloatTensor(train_values))
+        train_indices = Variable(torch.LongTensor(train_indices)).to(device)
+        train_values = Variable(torch.FloatTensor(train_values)).to(device)
 
         # forward pass
         entity_embed, relation_embed = model_gat(

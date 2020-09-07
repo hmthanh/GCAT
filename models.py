@@ -114,8 +114,8 @@ class SpKBGATModified(nn.Module):
 
     def forward(self, Corpus_, adj, batch_inputs, train_indices_nhop):
         # getting edge list
-        edge_list = adj[0]
-        edge_type = adj[1]
+        edge_list = adj[0].to(device)
+        edge_type = adj[1].to(device)
 
         edge_list_nhop = torch.cat(
             (train_indices_nhop[:, 3].unsqueeze(-1), train_indices_nhop[:, 0].unsqueeze(-1)), dim=1).t()
@@ -123,8 +123,6 @@ class SpKBGATModified(nn.Module):
             [train_indices_nhop[:, 1].unsqueeze(-1), train_indices_nhop[:, 2].unsqueeze(-1)], dim=1)
 
         if args.cuda:
-            edge_list = edge_list.to(device)
-            edge_type = edge_type.to(device)
             edge_list_nhop = edge_list_nhop.to(device)
             edge_type_nhop = edge_type_nhop.to(device)
 
@@ -145,15 +143,14 @@ class SpKBGATModified(nn.Module):
         mask_indices = torch.unique(batch_inputs[:, 2])
         mask = torch.zeros(self.entity_embeddings.shape[0])
         mask[mask_indices] = 1.0
+        entities_upgraded = self.entity_embeddings.mm(self.W_entities).to(device)
+		
         if args.cuda:
-            mask_indices.to(device)
-            mask.to(device)
-            out_entity_1.to(device)
+            mask_indices = mask_indices.to(device)
+            mask = mask.to(device)
+            out_entity_1 = out_entity_1.to(device)
 
-        entities_upgraded = self.entity_embeddings.mm(self.W_entities)
-        out_entity_1 = entities_upgraded + \
-            mask.unsqueeze(-1).expand_as(out_entity_1) * out_entity_1
-
+        out_entity_1 = entities_upgraded + mask.unsqueeze(-1).expand_as(out_entity_1) * out_entity_1
         out_entity_1 = F.normalize(out_entity_1, p=2, dim=1)
 
         self.final_entity_embeddings.data = out_entity_1.data

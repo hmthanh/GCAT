@@ -18,6 +18,8 @@ model_conv = SpKBGATConvOnly(entity_embeddings, relation_embeddings, args.entity
                              args.drop_GAT, args.drop_conv, args.alpha, args.alpha_conv,
                              args.nheads_GAT, args.out_channels)
 folder = "{output}/{dataset}".format(output=args.output_folder, dataset=args.dataset)
+if args.save_gdrive:
+    folder = args.drive_folder
 model_name = "{folder}/{dataset}_{device}_{name}_{epoch}.pt".format(folder=folder, dataset=args.dataset, device=device, name="conv", epoch=args.epochs_conv - 1)
 model_conv.load_state_dict(torch.load(model_name), strict=False)
 if args.cuda:
