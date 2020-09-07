@@ -112,6 +112,8 @@ class SpGraphAttentionLayer(nn.Module):
             (input[edge[0, :], :], input[edge[1, :], :], edge_embed[:, :]), dim=1).t()
         # edge_h: (2*in_dim + nrela_dim) x E
 
+        edge_h = edge_h.to(device)
+        self.a = self.a.to(device)
         edge_m = self.a.mm(edge_h)
         # edge_m: D * E
 
