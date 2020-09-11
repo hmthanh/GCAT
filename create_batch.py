@@ -414,7 +414,7 @@ class Corpus:
                 import math
                 # Have to do this, because it doesn't fit in memory
 
-                if 'WN' in args.data:
+                if 'WN' in args.data_folder:
                     num_triples_each_shot = int(
                         math.ceil(new_x_batch_head.shape[0] / 4))
 
@@ -455,7 +455,7 @@ class Corpus:
 
                 # Tail part here
 
-                if 'WN' in args.data:
+                if 'WN' in args.data_folder:
                     num_triples_each_shot = int(
                         math.ceil(new_x_batch_tail.shape[0] / 4))
 
