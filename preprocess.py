@@ -134,26 +134,16 @@ def build_data(path='./data', is_unweigted=False, directed=True):
 
     left_entity_avg = {}
     for i in range(len(relation2id)):
-        if i not in left_entity.keys():
-            left_entity[i] = {}
-            left_entity_avg[i] = 0
-        else:
-            left_entity_avg[i] = sum(left_entity[i].values()) * 1.0 / len(left_entity[i])
+        left_entity_avg[i] = sum(
+            left_entity[i].values()) * 1.0 / len(left_entity[i])
 
     right_entity_avg = {}
     for i in range(len(relation2id)):
-        if i not in right_entity.keys():
-            right_entity[i] = {}
-            right_entity_avg[i] = 0
-        else:
-            right_entity_avg[i] = sum(right_entity[i].values()) * 1.0 / len(right_entity[i])
+        right_entity_avg[i] = sum(
+            right_entity[i].values()) * 1.0 / len(right_entity[i])
 
     headTailSelector = {}
     for i in range(len(relation2id)):
-        if left_entity_avg[i] == 0 and right_entity_avg[i] == 0:
-            headTailSelector[i] = 0
-        else:
-            headTailSelector[i] = 1000 * right_entity_avg[i] / (right_entity_avg[i] + left_entity_avg[i])
+        headTailSelector[i] = 1000 * right_entity_avg[i] / (right_entity_avg[i] + left_entity_avg[i])
 
-    return (train_triples, train_adjacency_mat), (validation_triples, valid_adjacency_mat), (test_triples, test_adjacency_mat), \
-        entity2id, relation2id, headTailSelector, unique_entities_train
+    return (train_triples, train_adjacency_mat), (validation_triples, valid_adjacency_mat), (test_triples, test_adjacency_mat), entity2id, relation2id, headTailSelector, unique_entities_train
