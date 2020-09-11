@@ -495,7 +495,8 @@ class Corpus:
                 ranks_tail.append(
                     np.where(sorted_indices_tail.cpu().numpy() == 0)[0][0] + 1)
                 reciprocal_ranks_tail.append(1.0 / ranks_tail[-1])
-                print("sample - ", ranks_head[-1], ranks_tail[-1])
+                if args.print_console:
+                    print("sample - ", ranks_head[-1], ranks_tail[-1])
 
             for i in range(len(ranks_head)):
                 if ranks_head[i] <= 10:
@@ -515,31 +516,32 @@ class Corpus:
 
             assert len(ranks_head) == len(reciprocal_ranks_head)
             assert len(ranks_tail) == len(reciprocal_ranks_tail)
-            print("here {}".format(len(ranks_head)))
-            print("\nCurrent iteration time {}".format(time.time() - start_time))
-            print("Stats for replacing head are -> ")
-            print("Current iteration Hits@10 are {}".format(
-                hits_at_ten_head / len(ranks_head)))
-            print("Current iteration Hits@3 are {}".format(
-                hits_at_three_head / len(ranks_head)))
-            print("Current iteration Hits@1 are {}".format(
-                hits_at_one_head / len(ranks_head)))
-            print("Current iteration Mean rank {}".format(
-                sum(ranks_head) / len(ranks_head)))
-            print("Current iteration Mean Reciprocal Rank {}".format(
-                sum(reciprocal_ranks_head) / len(reciprocal_ranks_head)))
+            if args.print_console:
+                print("here {}".format(len(ranks_head)))
+                print("\nCurrent iteration time {}".format(time.time() - start_time))
+                print("Stats for replacing head are -> ")
+                print("Current iteration Hits@10 are {}".format(
+                    hits_at_ten_head / len(ranks_head)))
+                print("Current iteration Hits@3 are {}".format(
+                    hits_at_three_head / len(ranks_head)))
+                print("Current iteration Hits@1 are {}".format(
+                    hits_at_one_head / len(ranks_head)))
+                print("Current iteration Mean rank {}".format(
+                    sum(ranks_head) / len(ranks_head)))
+                print("Current iteration Mean Reciprocal Rank {}".format(
+                    sum(reciprocal_ranks_head) / len(reciprocal_ranks_head)))
 
-            print("\nStats for replacing tail are -> ")
-            print("Current iteration Hits@10 are {}".format(
-                hits_at_ten_tail / len(ranks_head)))
-            print("Current iteration Hits@3 are {}".format(
-                hits_at_three_tail / len(ranks_head)))
-            print("Current iteration Hits@1 are {}".format(
-                hits_at_one_tail / len(ranks_head)))
-            print("Current iteration Mean rank {}".format(
-                sum(ranks_tail) / len(ranks_tail)))
-            print("Current iteration Mean Reciprocal Rank {}".format(
-                sum(reciprocal_ranks_tail) / len(reciprocal_ranks_tail)))
+                print("\nStats for replacing tail are -> ")
+                print("Current iteration Hits@10 are {}".format(
+                    hits_at_ten_tail / len(ranks_head)))
+                print("Current iteration Hits@3 are {}".format(
+                    hits_at_three_tail / len(ranks_head)))
+                print("Current iteration Hits@1 are {}".format(
+                    hits_at_one_tail / len(ranks_head)))
+                print("Current iteration Mean rank {}".format(
+                    sum(ranks_tail) / len(ranks_tail)))
+                print("Current iteration Mean Reciprocal Rank {}".format(
+                    sum(reciprocal_ranks_tail) / len(reciprocal_ranks_tail)))
 
             average_hits_at_ten_head.append(
                 hits_at_ten_head / len(ranks_head))
@@ -560,7 +562,6 @@ class Corpus:
             average_mean_rank_tail.append(sum(ranks_tail) / len(ranks_tail))
             average_mean_recip_rank_tail.append(
                 sum(reciprocal_ranks_tail) / len(reciprocal_ranks_tail))
-
         print("\nAveraged stats for replacing head are -> ")
         print("Hits@10 are {}".format(sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)))
         print("Hits@3 are {}".format(sum(average_hits_at_three_head) / len(average_hits_at_three_head)))

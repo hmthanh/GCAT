@@ -72,7 +72,8 @@ epoch_losses = []   # losses of all epochs
 print("Number of epochs {}".format(args.epochs_gat))
 
 for epoch in range(args.epochs_gat):
-    print("\nepoch-> ", epoch)
+    if args.print_console:
+        print("\nepoch-> ", epoch)
     random.shuffle(Corpus_.train_triples)
     Corpus_.train_indices = np.array(
         list(Corpus_.train_triples)).astype(np.int32)
@@ -109,12 +110,14 @@ for epoch in range(args.epochs_gat):
         epoch_loss.append(loss.data.item())
 
         end_time_iter = time.time()
-        print("Iteration-> {0}  , Iteration_time-> {1:.4f} , Iteration_loss {2:.4f}".format(
-            iters, end_time_iter - start_time_iter, loss.data.item()))
+        if args.print_console:
+            print("Iteration-> {0}  , Iteration_time-> {1:.4f} , Iteration_loss {2:.4f}".format(
+                iters, end_time_iter - start_time_iter, loss.data.item()))
 
     scheduler.step()
-    print("Epoch {} , average loss {} , epoch_time {}".format(
-        epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
+    if args.print_console:
+        print("Epoch {} , average loss {} , epoch_time {}".format(
+            epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
     epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
 
     if epoch >= args.epochs_gat - 1:

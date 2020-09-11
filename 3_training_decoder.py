@@ -54,7 +54,8 @@ epoch_losses = []   # losses of all epochs
 print("Number of epochs {}".format(args.epochs_conv))
 
 for epoch in range(args.epochs_conv):
-    print("\nepoch-> ", epoch)
+    if args.print_console:
+        print("\nepoch-> ", epoch)
     random.shuffle(Corpus_.train_triples)
     Corpus_.train_indices = np.array(
         list(Corpus_.train_triples)).astype(np.int32)
@@ -96,12 +97,13 @@ for epoch in range(args.epochs_conv):
 
         end_time_iter = time.time()
 
-        print("Iteration-> {0}  , Iteration_time-> {1:.4f} , Iteration_loss {2:.4f}".format(
-            iters, end_time_iter - start_time_iter, loss.data.item()))
+        if args.print_console:
+            print("Iteration-> {0}  , Iteration_time-> {1:.4f} , Iteration_loss {2:.4f}".format(
+                iters, end_time_iter - start_time_iter, loss.data.item()))
 
     scheduler.step()
-    print("Epoch {} , average loss {} , epoch_time {}".format(
-        epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
+    if args.print_console:
+        print("Epoch {} , average loss {} , epoch_time {}".format(epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
     epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
     if epoch >= args.epochs_conv - 1:
         save_model(model_conv, name="conv", epoch=epoch)
