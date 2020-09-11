@@ -1,4 +1,4 @@
-# GCAT (Graph Collaborate Attention Network) - In Proccess
+# GCAT (Graph Collaborate Attention Network) - UnDone
 ![Status](https://img.shields.io/github/issues/hmthanh/GCAT) ![Fork](https://img.shields.io/github/forks/hmthanh/GCAT)
 ![Stars](https://img.shields.io/github/stars/hmthanh/GCAT)
 ![License](https://img.shields.io/github/license/hmthanh/GCAT)

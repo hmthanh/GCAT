@@ -5,6 +5,7 @@ class Config(object):
                  dataset="WN18RR",
                  data_folder="./data/WN18RR/",
                  cuda=False,
+                 print_console=False,
                  output_folder="./output/",
                  save_gdrive=False,
                  drive_folder="/content/drive/My Drive",
@@ -36,6 +37,7 @@ class Config(object):
         self.drive_folder = drive_folder
         self.save_gdrive = save_gdrive
         self.cuda = cuda
+        self.print_console = False
 
         self.epochs_gat = epochs_gat
         self.epochs_conv = epochs_conv
