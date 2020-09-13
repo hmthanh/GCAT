@@ -1,0 +1,63 @@
+Current iteration time 4644.5255715847015
+Stats for replacing head are -> 
+Current iteration Hits@10 are 0.9100404597856816
+Current iteration Hits@3 are 0.8463543870934976
+Current iteration Hits@1 are 0.6982444854497131
+Current iteration Mean rank 44.15186809094141
+Current iteration Mean Reciprocal Rank 0.7802288655000069
+
+Stats for replacing tail are -> 
+Current iteration Hits@10 are 0.9228555467149702
+Current iteration Hits@3 are 0.8573919520576933
+Current iteration Hits@1 are 0.7032723332938329
+Current iteration Mean rank 33.10580487887457
+Current iteration Mean Reciprocal Rank 0.7881908618233091
+
+Averaged stats for replacing head are -> 
+Hits@10 are 0.9100404597856816
+Hits@3 are 0.8463543870934976
+Hits@1 are 0.6982444854497131
+Mean rank 44.15186809094141
+Mean Reciprocal Rank 0.7802288655000069
+
+Averaged stats for replacing tail are -> 
+Hits@10 are 0.9228555467149702
+Hits@3 are 0.8573919520576933
+Hits@1 are 0.7032723332938329
+Mean rank 33.10580487887457
+Mean Reciprocal Rank 0.7881908618233091
+
+Cumulative stats are -> 
+Hits@10 are 0.9164480032503259
+Hits@3 are 0.8518731695755954
+Hits@1 are 0.7007584093717729
+Mean rank 38.62883648490799
+Mean Reciprocal Rank 0.784209863661658
+4. Evaluation Successfully !
+
+
+Averaged stats for replacing head are -> 
+Hits@10 are 0.9100404597856816
+Hits@3 are 0.8463543870934976
+Hits@1 are 0.6982444854497131
+Mean rank 44.15186809094141
+Mean Reciprocal Rank 0.7802288655000069
+
+Averaged stats for replacing tail are -> 
+Hits@10 are 0.9228555467149702
+Hits@3 are 0.8573919520576933
+Hits@1 are 0.7032723332938329
+Mean rank 33.10580487887457
+Mean Reciprocal Rank 0.7881908618233091
+
+Cumulative stats are -> 
+Hits@10 are 0.9164480032503259
+Hits@3 are 0.8518731695755954
+Hits@1 are 0.7007584093717729
+Mean rank 38.62883648490799
+Mean Reciprocal Rank 0.784209863661658
+
+
+
+
+
