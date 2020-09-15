@@ -422,7 +422,7 @@ class Corpus:
                         new_x_batch_head[:num_triples_each_shot, :]).cuda())
                     scores2_head = model.batch_test(torch.LongTensor(
                         new_x_batch_head[num_triples_each_shot: 2 * num_triples_each_shot, :]).cuda())
-                    scores3_head = model.batch_test(torch.LongTensor(
+                    scores3_head = model.batch_test(torch.LongTe    nsor(
                         new_x_batch_head[2 * num_triples_each_shot: 3 * num_triples_each_shot, :]).cuda())
                     scores4_head = model.batch_test(torch.LongTensor(
                         new_x_batch_head[3 * num_triples_each_shot: 4 * num_triples_each_shot, :]).cuda())
