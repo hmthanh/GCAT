@@ -518,7 +518,8 @@ class Corpus:
             assert len(ranks_tail) == len(reciprocal_ranks_tail)
             if args.print_console:
                 print("here {}".format(len(ranks_head)))
-                print("\nCurrent iteration time {}".format(time.time() - start_time))
+                print("\nCurrent iteration time {}".format(
+                    time.time() - start_time))
                 print("Stats for replacing head are -> ")
                 print("Current iteration Hits@10 are {}".format(
                     hits_at_ten_head / len(ranks_head)))
@@ -563,18 +564,28 @@ class Corpus:
             average_mean_recip_rank_tail.append(
                 sum(reciprocal_ranks_tail) / len(reciprocal_ranks_tail))
         print("\nAveraged stats for replacing head are -> ")
-        print("Hits@10 are {}".format(sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)))
-        print("Hits@3 are {}".format(sum(average_hits_at_three_head) / len(average_hits_at_three_head)))
-        print("Hits@1 are {}".format(sum(average_hits_at_one_head) / len(average_hits_at_one_head)))
-        print("Mean rank {}".format(sum(average_mean_rank_head) / len(average_mean_rank_head)))
-        print("Mean Reciprocal Rank {}".format(sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head)))
+        print("Hits@10 are {}".format(sum(average_hits_at_ten_head) /
+                                      len(average_hits_at_ten_head)))
+        print("Hits@3 are {}".format(sum(average_hits_at_three_head) /
+                                     len(average_hits_at_three_head)))
+        print("Hits@1 are {}".format(sum(average_hits_at_one_head) /
+                                     len(average_hits_at_one_head)))
+        print("Mean rank {}".format(
+            sum(average_mean_rank_head) / len(average_mean_rank_head)))
+        print("Mean Reciprocal Rank {}".format(
+            sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head)))
 
         print("\nAveraged stats for replacing tail are -> ")
-        print("Hits@10 are {}".format(sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail)))
-        print("Hits@3 are {}".format(sum(average_hits_at_three_tail) / len(average_hits_at_three_tail)))
-        print("Hits@1 are {}".format(sum(average_hits_at_one_tail) / len(average_hits_at_one_tail)))
-        print("Mean rank {}".format(sum(average_mean_rank_tail) / len(average_mean_rank_tail)))
-        print("Mean Reciprocal Rank {}".format(sum(average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail)))
+        print("Hits@10 are {}".format(sum(average_hits_at_ten_tail) /
+                                      len(average_hits_at_ten_tail)))
+        print("Hits@3 are {}".format(sum(average_hits_at_three_tail) /
+                                     len(average_hits_at_three_tail)))
+        print("Hits@1 are {}".format(sum(average_hits_at_one_tail) /
+                                     len(average_hits_at_one_tail)))
+        print("Mean rank {}".format(
+            sum(average_mean_rank_tail) / len(average_mean_rank_tail)))
+        print("Mean Reciprocal Rank {}".format(
+            sum(average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail)))
 
         cumulative_hits_ten = (sum(average_hits_at_ten_head) / len(average_hits_at_ten_head)
                                + sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail)) / 2
@@ -596,17 +607,26 @@ class Corpus:
 
         # Save txt
         lines = "\nAveraged stats for replacing head are -> \n"
-        lines += "Hits@10 are {}\n".format(sum(average_hits_at_ten_head) / len(average_hits_at_ten_head))
-        lines += "Hits@3 are {}\n".format(sum(average_hits_at_three_head) / len(average_hits_at_three_head))
-        lines += "Hits@1 are {}\n".format(sum(average_hits_at_one_head) / len(average_hits_at_one_head))
-        lines += "Mean rank {}\n".format(sum(average_mean_rank_head) / len(average_mean_rank_head))
-        lines += "Mean Reciprocal Rank {}\n".format(sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head))
+        lines += "Hits@10 are {}\n".format(
+            sum(average_hits_at_ten_head) / len(average_hits_at_ten_head))
+        lines += "Hits@3 are {}\n".format(
+            sum(average_hits_at_three_head) / len(average_hits_at_three_head))
+        lines += "Hits@1 are {}\n".format(
+            sum(average_hits_at_one_head) / len(average_hits_at_one_head))
+        lines += "Mean rank {}\n".format(sum(average_mean_rank_head) /
+                                         len(average_mean_rank_head))
+        lines += "Mean Reciprocal Rank {}\n".format(
+            sum(average_mean_recip_rank_head) / len(average_mean_recip_rank_head))
 
         lines += "\nAveraged stats for replacing tail are -> \n"
-        lines += "Hits@10 are {}\n".format(sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail))
-        lines += "Hits@3 are {}\n".format(sum(average_hits_at_three_tail) / len(average_hits_at_three_tail))
-        lines += "Hits@1 are {}\n".format(sum(average_hits_at_one_tail) / len(average_hits_at_one_tail))
-        lines += "Mean rank {}\n".format(sum(average_mean_rank_tail) / len(average_mean_rank_tail))
+        lines += "Hits@10 are {}\n".format(
+            sum(average_hits_at_ten_tail) / len(average_hits_at_ten_tail))
+        lines += "Hits@3 are {}\n".format(
+            sum(average_hits_at_three_tail) / len(average_hits_at_three_tail))
+        lines += "Hits@1 are {}\n".format(
+            sum(average_hits_at_one_tail) / len(average_hits_at_one_tail))
+        lines += "Mean rank {}\n".format(sum(average_mean_rank_tail) /
+                                         len(average_mean_rank_tail))
         lines += "Mean Reciprocal Rank {}\n".format(
             sum(average_mean_recip_rank_tail) / len(average_mean_recip_rank_tail))
 
