@@ -1,5 +1,4 @@
 import torch
-
 from models import SpKBGATModified, SpKBGATConvOnly
 from torch.autograd import Variable
 import numpy as np
