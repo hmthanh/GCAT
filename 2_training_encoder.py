@@ -10,8 +10,6 @@ import random
 import time
 from create_config import Config
 
-l = torch.nn.MarginRankingLoss(0)
-
 args = Config()
 args.load_config()
 device = "cuda" if args.cuda else "cpu"
