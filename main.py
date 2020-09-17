@@ -28,11 +28,11 @@ args.load_config()
 
 def load_data(args):
     train_data, validation_data, test_data, entity2id, relation2id, headTailSelector, unique_entities_train = build_data(
-        args.data, is_unweigted=False, directed=True)
+        args.data_folder, is_unweigted=False, directed=True)
 
     if args.pretrained_emb:
-        entity_embeddings, relation_embeddings = init_embeddings(os.path.join(args.data, 'entity2vec.txt'),
-                                                                 os.path.join(args.data, 'relation2vec.txt'))
+        entity_embeddings, relation_embeddings = init_embeddings(os.path.join(args.data_folder, 'entity2vec.txt'),
+                                                                 os.path.join(args.data_folder, 'relation2vec.txt'))
         print("Initialised relations and entities from TransE")
 
     else:
@@ -176,7 +176,7 @@ def train_gat(args):
             epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
         epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
 
-        save_model(model_gat, args.data, epoch,
+        save_model(model_gat, args.data_folder, epoch,
                    args.output_folder)
 
 
@@ -268,7 +268,7 @@ def train_conv(args):
             epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
         epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
 
-        save_model(model_conv, args.data, epoch,
+        save_model(model_conv, args.data_folder, epoch,
                    args.output_folder + "conv/")
 
 
