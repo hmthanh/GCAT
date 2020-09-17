@@ -143,14 +143,16 @@ class SpKBGATModified(nn.Module):
         mask_indices = torch.unique(batch_inputs[:, 2])
         mask = torch.zeros(self.entity_embeddings.shape[0])
         mask[mask_indices] = 1.0
-        entities_upgraded = self.entity_embeddings.mm(self.W_entities).to(device)
-		
+        entities_upgraded = self.entity_embeddings.mm(
+            self.W_entities).to(device)
+
         if args.cuda:
             mask_indices = mask_indices.to(device)
             mask = mask.to(device)
             out_entity_1 = out_entity_1.to(device)
 
-        out_entity_1 = entities_upgraded + mask.unsqueeze(-1).expand_as(out_entity_1) * out_entity_1
+        out_entity_1 = entities_upgraded + \
+            mask.unsqueeze(-1).expand_as(out_entity_1) * out_entity_1
         out_entity_1 = F.normalize(out_entity_1, p=2, dim=1)
 
         self.final_entity_embeddings.data = out_entity_1.data

@@ -25,6 +25,7 @@ from create_config import Config
 args = Config()
 args.load_config()
 
+
 def load_data(args):
     train_data, validation_data, test_data, entity2id, relation2id, headTailSelector, unique_entities_train = build_data(
         args.data, is_unweigted=False, directed=True)
@@ -52,6 +53,7 @@ node_neighbors_2hop = Corpus_.node_neighbors_2hop
 
 print("Initial entity dimensions {} , relation dimensions {}".format(
     entity_embeddings.size(), relation_embeddings.size()))
+
 
 def batch_gat_loss(gat_loss_func, train_indices, entity_embed, relation_embed):
     len_pos_triples = int(
@@ -281,7 +283,6 @@ def evaluate_conv(args, unique_entities):
     model_conv.eval()
     with torch.no_grad():
         Corpus_.get_validation_pred(args, model_conv, unique_entities)
-
 
 train_gat(args)
 train_conv(args)

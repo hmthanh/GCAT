@@ -10,6 +10,7 @@ args = Config()
 args.load_config()
 device = "cuda" if args.cuda else "cpu"
 
+
 class ConvKB(nn.Module):
     def __init__(self, input_dim, input_seq_len, in_channels, out_channels, drop_prob, alpha_leaky):
         super().__init__()
@@ -24,10 +25,9 @@ class ConvKB(nn.Module):
         nn.init.xavier_uniform_(self.conv_layer.weight, gain=1.414)
 
     def forward(self, conv_input):
-
         batch_size, length, dim = conv_input.size()
         # assuming inputs are of the form ->
-            conv_input = conv_input.transpose(1, 2)
+        conv_input = conv_input.transpose(1, 2)
         # batch * length(which is 3 here -> entity,relation,entity) * dim
         # To make tensor of size 4, where second dim is for input channels
         conv_input = conv_input.unsqueeze(1)
