@@ -1,5 +1,4 @@
 import torch
-
 import numpy as np
 from utils import save_object
 from preprocess import  init_embeddings, build_data
