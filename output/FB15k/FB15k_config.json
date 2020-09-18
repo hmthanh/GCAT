@@ -1,0 +1,37 @@
+{
+    "dataset": "FB15k",
+    "data_folder": "./data",
+    "output_folder": "./output",
+    "drive_folder": "/content/drive/My Drive",
+    "save_gdrive": true,
+    "cuda": true,
+    "print_console": true,
+    "epochs_gat": 3000,
+    "epochs_conv": 150,
+    "weight_decay_gat": 1e-05,
+    "weight_decay_conv": 1e-05,
+    "pretrained_emb": false,
+    "embedding_size": 50,
+    "lr": 0.001,
+    "get_2hop": true,
+    "use_2hop": true,
+    "partial_2hop": true,
+    "batch_size_gat": 272115,
+    "valid_invalid_ratio_gat": 2,
+    "drop_GAT": 0.3,
+    "alpha": 0.2,
+    "entity_out_dim": [
+        100,
+        200
+    ],
+    "nheads_GAT": [
+        2,
+        2
+    ],
+    "margin": 1,
+    "batch_size_conv": 128,
+    "alpha_conv": 0.2,
+    "valid_invalid_ratio_conv": 40,
+    "out_channels": 50,
+    "drop_conv": 0.3
+}
