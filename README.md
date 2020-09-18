@@ -6,15 +6,15 @@
 
 Graph Collaborate Attention Network
 
-I modify from KBGAT (https://github.com/deepakn97/relationPrediction )
+GCAT was modify from KBGAT repos (https://github.com/deepakn97/relationPrediction )
 
 ## Experiment Result
 
-|   CGAT   | H@1   | H@10  |   MR  |  MRR  |
-|----------|:-----:|:-----:|:-----:|:-----:|
-| FB15K    | 0.701 | 0.916 |   38  | 0.784 |
-| FB15k-237| 0.701 | 0.916 |   38  | 0.784 |
-| FB15k-237| 0.361 | 0.583 |  211  | 0.435 |
+|   CGAT    | H@1   | H@10  |   MR  |  MRR  |
+|-----------|:-----:|:-----:|:-----:|:-----:|
+| FB15K     | 0.701 | 0.916 |   38  | 0.784 |
+| FB15k-237 | 0.361 | 0.583 |  211  | 0.435 |
+| WN18RR    | 0.351 | 0.570 | 1974  | 0.430 |
 
 ## Structure
 
