@@ -16,6 +16,8 @@ from utils import save_model, save_object
 args = Config()
 args.load_config()
 
+device = "cuda" if args.cuda else "cpu"
+
 
 def load_data(args):
     train_data, validation_data, test_data, entity2id, relation2id, headTailSelector, unique_entities_train = build_data(
@@ -198,7 +200,7 @@ def train_conv(args):
     if args.save_gdrive:
         folder = args.drive_folder
     model_name = "{folder}/{dataset}_{device}_{name}_{epoch}.pt".format(folder=folder, dataset=args.dataset,
-                                                                        device=device, name="gat",
+                                                                        device=args.device, name="gat",
                                                                         epoch=args.epochs_gat - 1)
     model_gat.load_state_dict(torch.load(model_name), strict=False)
     model_conv.final_entity_embeddings = model_gat.final_entity_embeddings
