@@ -20,7 +20,7 @@ import sys
 import logging
 import time
 import pickle
-from create_config import Config
+from config import Config
 
 args = Config()
 args.load_config()
