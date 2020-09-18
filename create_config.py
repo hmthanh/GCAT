@@ -1,5 +1,6 @@
 import json
 
+
 class Config(object):
     def __init__(self,
                  dataset="WN18RR",
@@ -37,7 +38,7 @@ class Config(object):
         self.drive_folder = drive_folder
         self.save_gdrive = save_gdrive
         self.cuda = cuda
-        self.print_console = False
+        self.print_console = print_console
 
         self.epochs_gat = epochs_gat
         self.epochs_conv = epochs_conv

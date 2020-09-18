@@ -284,6 +284,7 @@ def evaluate_conv(args, unique_entities):
     with torch.no_grad():
         Corpus_.get_validation_pred(args, model_conv, unique_entities)
 
+
 train_gat(args)
 train_conv(args)
 evaluate_conv(args, Corpus_.unique_entities_train)
