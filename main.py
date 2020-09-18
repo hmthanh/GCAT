@@ -130,8 +130,7 @@ def train_gat(args):
             num_iters_per_epoch = len(
                 Corpus_.train_indices) // args.batch_size_gat
         else:
-            num_iters_per_epoch = (
-                                          len(Corpus_.train_indices) // args.batch_size_gat) + 1
+            num_iters_per_epoch = (len(Corpus_.train_indices) // args.batch_size_gat) + 1
 
         for iters in range(num_iters_per_epoch):
             start_time_iter = time.time()
