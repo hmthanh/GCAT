@@ -10,7 +10,7 @@ from matplotlib.lines import Line2D
 from copy import deepcopy
 
 from preprocess import read_entity_from_id, read_relation_from_id, init_embeddings, build_data
-from corpus import Corpus
+from create_batch import Corpus
 from utils import save_model
 
 import random
