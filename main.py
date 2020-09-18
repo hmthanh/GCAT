@@ -1,26 +1,17 @@
-import torch
-
-from models import SpKBGATModified, SpKBGATConvOnly
-from torch.autograd import Variable
-import torch.nn as nn
-import torch.nn.functional as F
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
-from copy import deepcopy
-
-from preprocess import read_entity_from_id, read_relation_from_id, init_embeddings, build_data
-from create_batch import Corpus
-from utils import save_model
-
-import random
-import argparse
 import os
-import sys
-import logging
+import random
 import time
-import pickle
+
+import numpy as np
+import torch
+import torch.nn as nn
+from torch.autograd import Variable
+
 from config import Config
+from create_batch import Corpus
+from models import SpKBGATModified, SpKBGATConvOnly
+from preprocess import init_embeddings, build_data
+from utils import save_model, save_object
 
 args = Config()
 args.load_config()
@@ -34,7 +25,6 @@ def load_data(args):
         entity_embeddings, relation_embeddings = init_embeddings(os.path.join(args.data_folder, 'entity2vec.txt'),
                                                                  os.path.join(args.data_folder, 'relation2vec.txt'))
         print("Initialised relations and entities from TransE")
-
     else:
         entity_embeddings = np.random.randn(
             len(entity2id), args.embedding_size)
@@ -53,6 +43,8 @@ node_neighbors_2hop = Corpus_.node_neighbors_2hop
 
 print("Initial entity dimensions {} , relation dimensions {}".format(
     entity_embeddings.size(), relation_embeddings.size()))
+
+print("1. Created Corpus Successfully !")
 
 
 def batch_gat_loss(gat_loss_func, train_indices, entity_embed, relation_embed):
@@ -85,12 +77,10 @@ def batch_gat_loss(gat_loss_func, train_indices, entity_embed, relation_embed):
 
 
 def train_gat(args):
-
     # Creating the gat model here.
     ####################################
 
     print("Defining model")
-
     print(
         "\nModel type -> GAT layer with {} heads used , Initital Embeddings training".format(args.nheads_GAT[0]))
     model_gat = SpKBGATModified(entity_embeddings, relation_embeddings, args.entity_out_dim, args.entity_out_dim,
@@ -108,9 +98,10 @@ def train_gat(args):
     gat_loss_func = nn.MarginRankingLoss(margin=args.margin)
 
     current_batch_2hop_indices = torch.tensor([])
-    if(args.use_2hop):
+    if (args.use_2hop):
         current_batch_2hop_indices = Corpus_.get_batch_nhop_neighbors_all(args,
-                                                                          Corpus_.unique_entities_train, node_neighbors_2hop)
+                                                                          Corpus_.unique_entities_train,
+                                                                          node_neighbors_2hop)
 
     if args.cuda:
         current_batch_2hop_indices = Variable(
@@ -119,11 +110,12 @@ def train_gat(args):
         current_batch_2hop_indices = Variable(
             torch.LongTensor(current_batch_2hop_indices))
 
-    epoch_losses = []   # losses of all epochs
+    epoch_losses = []  # losses of all epochs
     print("Number of epochs {}".format(args.epochs_gat))
 
     for epoch in range(args.epochs_gat):
-        print("\nepoch-> ", epoch)
+        if args.print_console:
+            print("\nepoch-> ", epoch)
         random.shuffle(Corpus_.train_triples)
         Corpus_.train_indices = np.array(
             list(Corpus_.train_triples)).astype(np.int32)
@@ -137,7 +129,7 @@ def train_gat(args):
                 Corpus_.train_indices) // args.batch_size_gat
         else:
             num_iters_per_epoch = (
-                len(Corpus_.train_indices) // args.batch_size_gat) + 1
+                                          len(Corpus_.train_indices) // args.batch_size_gat) + 1
 
         for iters in range(num_iters_per_epoch):
             start_time_iter = time.time()
@@ -168,20 +160,24 @@ def train_gat(args):
 
             end_time_iter = time.time()
 
-            print("Iteration-> {0}  , Iteration_time-> {1:.4f} , Iteration_loss {2:.4f}".format(
-                iters, end_time_iter - start_time_iter, loss.data.item()))
+            if args.print_console:
+                print("Iteration-> {0}  , Iteration_time-> {1:.4f} , Iteration_loss {2:.4f}".format(
+                    iters, end_time_iter - start_time_iter, loss.data.item()))
 
         scheduler.step()
-        print("Epoch {} , average loss {} , epoch_time {}".format(
-            epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
+        if args.print_console:
+            print("Epoch {} , average loss {} , epoch_time {}".format(
+                epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
         epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
 
-        save_model(model_gat, args.data_folder, epoch,
-                   args.output_folder)
+        if epoch >= args.epochs_gat - 1:
+            save_model(model_gat, name="gat", epoch=epoch)
+
+    save_object(epoch_losses, output=args.output_folder, name="loss_gat")
+    print("2. Train Encoder Successfully !")
 
 
 def train_conv(args):
-
     # Creating convolution model here.
     ####################################
 
@@ -197,8 +193,14 @@ def train_conv(args):
         model_conv.cuda()
         model_gat.cuda()
 
-    model_gat.load_state_dict(torch.load(
-        '{}/trained_{}.pth'.format(args.output_folder, args.epochs_gat - 1)), strict=False)
+    print("Loading GAT encoder")
+    folder = "{output}/{dataset}".format(output=args.output_folder, dataset=args.dataset)
+    if args.save_gdrive:
+        folder = args.drive_folder
+    model_name = "{folder}/{dataset}_{device}_{name}_{epoch}.pt".format(folder=folder, dataset=args.dataset,
+                                                                        device=device, name="gat",
+                                                                        epoch=args.epochs_gat - 1)
+    model_gat.load_state_dict(torch.load(model_name), strict=False)
     model_conv.final_entity_embeddings = model_gat.final_entity_embeddings
     model_conv.final_relation_embeddings = model_gat.final_relation_embeddings
 
@@ -213,11 +215,12 @@ def train_conv(args):
 
     margin_loss = torch.nn.SoftMarginLoss()
 
-    epoch_losses = []   # losses of all epochs
+    epoch_losses = []  # losses of all epochs
     print("Number of epochs {}".format(args.epochs_conv))
 
     for epoch in range(args.epochs_conv):
-        print("\nepoch-> ", epoch)
+        if args.print_console:
+            print("\nepoch-> ", epoch)
         random.shuffle(Corpus_.train_triples)
         Corpus_.train_indices = np.array(
             list(Corpus_.train_triples)).astype(np.int32)
@@ -231,7 +234,7 @@ def train_conv(args):
                 Corpus_.train_indices) // args.batch_size_conv
         else:
             num_iters_per_epoch = (
-                len(Corpus_.train_indices) // args.batch_size_conv) + 1
+                                          len(Corpus_.train_indices) // args.batch_size_conv) + 1
 
         for iters in range(num_iters_per_epoch):
             start_time_iter = time.time()
@@ -260,29 +263,41 @@ def train_conv(args):
 
             end_time_iter = time.time()
 
-            print("Iteration-> {0}  , Iteration_time-> {1:.4f} , Iteration_loss {2:.4f}".format(
-                iters, end_time_iter - start_time_iter, loss.data.item()))
+            if args.print_console:
+                print("Iteration-> {0}  , Iteration_time-> {1:.4f} , Iteration_loss {2:.4f}".format(
+                    iters, end_time_iter - start_time_iter, loss.data.item()))
 
         scheduler.step()
-        print("Epoch {} , average loss {} , epoch_time {}".format(
-            epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
+        if args.print_console:
+            print("Epoch {} , average loss {} , epoch_time {}".format(
+                epoch, sum(epoch_loss) / len(epoch_loss), time.time() - start_time))
         epoch_losses.append(sum(epoch_loss) / len(epoch_loss))
 
-        save_model(model_conv, args.data_folder, epoch,
-                   args.output_folder + "conv/")
+        if epoch >= args.epochs_conv - 1:
+            save_model(model_conv, name="conv", epoch=epoch)
+
+    save_object(epoch_losses, output=args.output_folder, name="loss_conv")
+    print("3. Train Decoder Successfully !")
 
 
 def evaluate_conv(args, unique_entities):
     model_conv = SpKBGATConvOnly(entity_embeddings, relation_embeddings, args.entity_out_dim, args.entity_out_dim,
                                  args.drop_GAT, args.drop_conv, args.alpha, args.alpha_conv,
                                  args.nheads_GAT, args.out_channels)
-    model_conv.load_state_dict(torch.load(
-        '{0}conv/trained_{1}.pth'.format(args.output_folder, args.epochs_conv - 1)), strict=False)
-
-    model_conv.cuda()
+    folder = "{output}/{dataset}".format(output=args.output_folder, dataset=args.dataset)
+    if args.save_gdrive:
+        folder = args.drive_folder
+    model_name = "{folder}/{dataset}_{device}_{name}_{epoch}.pt".format(folder=folder, dataset=args.dataset,
+                                                                        device=device, name="conv",
+                                                                        epoch=args.epochs_conv - 1)
+    model_conv.load_state_dict(torch.load(model_name), strict=False)
+    if args.cuda:
+        model_conv.cuda()
     model_conv.eval()
     with torch.no_grad():
         Corpus_.get_validation_pred(args, model_conv, unique_entities)
+
+    print("4. Evaluation Successfully !")
 
 
 train_gat(args)
