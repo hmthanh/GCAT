@@ -8,7 +8,7 @@ from utils import save_model, save_object, load_object
 
 import random
 import time
-from create_config import Config
+from config import Config
 
 args = Config()
 args.load_config()

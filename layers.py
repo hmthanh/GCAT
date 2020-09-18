@@ -5,7 +5,7 @@ import time
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-from create_config import Config
+from config import Config
 args = Config()
 args.load_config()
 device = "cuda" if args.cuda else "cpu"

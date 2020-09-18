@@ -1,7 +1,7 @@
 import torch
 import os
 import numpy as np
-from create_config import Config
+from config import Config
 
 args = Config()
 args.load_config()

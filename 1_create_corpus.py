@@ -1,10 +1,11 @@
 import torch
+
 import numpy as np
 from utils import save_object
 from preprocess import  init_embeddings, build_data
 from create_batch import Corpus
 import os
-from create_config import Config
+from config import Config
 
 args = Config()
 args.load_config()

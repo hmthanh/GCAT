@@ -1,11 +1,12 @@
 import torch
+
 from models import SpKBGATModified, SpKBGATConvOnly
 from torch.autograd import Variable
 import numpy as np
 from utils import save_model, load_object, load_model, save_object
 import random
 import time
-from create_config import Config
+from config import Config
 
 args = Config()
 args.load_config()

@@ -1,4 +1,4 @@
-from create_config import Config
+from config import Config
 from create_dataset_files import getID
 
 args = Config()

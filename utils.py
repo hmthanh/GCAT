@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 from matplotlib.lines import Line2D
 
-from create_config import Config
+from config import Config
 
 args = Config()
 args.load_config()
