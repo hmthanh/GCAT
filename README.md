@@ -6,15 +6,13 @@
 
 Graph Collaborate Attention Network
 
-GCAT was modify from KBGAT repos (https://github.com/deepakn97/relationPrediction )
-
 ## Experiment Result
 
-|   CGAT    | H@1   | H@10  |   MR  |  MRR  |
+|   GCAT    | H@1   | H@10  |   MR  |  MRR  |
 |-----------|:-----:|:-----:|:-----:|:-----:|
-| FB15K     | 0.701 | 0.916 |   38  | 0.784 |
-| FB15k-237 | 0.361 | 0.583 |  211  | 0.435 |
-| WN18RR    | 0.351 | 0.570 | 1974  | 0.430 |
+| FB15K     | 70.08 | 91.64 |   38  | 0.784 |
+| FB15k-237 | 36.06 | 58.32 |  211  | 0.435 |
+| WN18RR    | 35.12 | 57.01 | 1974  | 0.430 |
 
 ## Structure
 
@@ -128,3 +126,5 @@ Email : hmthanhgm@gmail.com | phanminhtam247@gmail.com
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 - **[MIT license](http://opensource.org/licenses/mit-license.php)**
 - Copyright 2020 © <a href="http://hmthanh.github.io" target="_blank">Minh-Thanh Hoang</a>.
+
+*GCAT was modify from KBGAT repos (https://github.com/deepakn97/relationPrediction )*
