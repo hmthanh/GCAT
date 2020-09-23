@@ -2,6 +2,66 @@
 
 TransE (initiation) -> KBGAT (encoder) -> ConvKB (decoder) -> Evaluation
 
+## Knowlege Graph
+Example
+
+```python
+Melania_Trump wife_of Donald_Trump
+Donald_Trump president_of U.S
+Jeff_Bezos richest_of U.S
+Tom_Cruise born_in New_York
+New_York state_of U.S
+Tesla_Inc founded_in U.S
+Melania_Trump first_lady U.S
+Tom_Cruise native_of U.S
+```
+->
+```python
+[0 0 1] 
+[1 1 2] 
+[3 2 2] 
+[4 3 5] 
+[5 4 2] 
+[6 5 2] 
+[0 6 2] 
+[4 7 2] 
+[7 8 0]
+```
+
+-->
+
+```python
+tensor([[5, 4, 2],
+        [4, 7, 2],
+        [4, 3, 5],
+        [1, 1, 2],
+        [0, 0, 1],
+        [0, 6, 2],
+        [7, 8, 0],
+        [3, 2, 2],
+        [6, 5, 2],
+        [1, 4, 2],
+        [0, 7, 2],
+        [6, 3, 5],
+        [2, 1, 2],
+        [7, 0, 1],
+        [6, 6, 2],
+        [1, 8, 0],
+        [7, 2, 2],
+        [1, 5, 2],
+        [5, 4, 1],
+        [4, 7, 4],
+        [4, 3, 2],
+        [1, 1, 7],
+        [0, 0, 4],
+        [0, 6, 0],
+        [7, 8, 6],
+        [3, 2, 5],
+        [6, 5, 6]])
+```
+
+
+
 ### TransE
 
 
