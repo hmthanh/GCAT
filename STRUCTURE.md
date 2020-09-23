@@ -21,9 +21,9 @@ Thanh friend_of Melania_Trump
 ```
 * `entity2id.txt`
 ```python
-Melania_Trump	0
-Donald_Trump	1
-U.S				2
+Melania_Trump	0. 
+Donald_Trump	1. 
+U.S				2.
 Jeff_Bezos		3
 Tom_Cruise		4
 New_York		5
@@ -34,7 +34,7 @@ Thanh			7
 * `relation2id.txt`
 ```python
 wife_of			0
-president_of	1
+president_of	1.
 richest_of		2
 born_in			3
 state_of		4
