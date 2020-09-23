@@ -5,7 +5,7 @@ TransE (initiation) -> KBGAT (encoder) -> ConvKB (decoder) -> Evaluation
 ## Knowlege Graph
 Example
 
-()
+![alt text](kb.png)
 
 * `train.txt`
 ```python
