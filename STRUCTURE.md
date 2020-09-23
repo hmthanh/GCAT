@@ -27,6 +27,7 @@ New_York		5
 Tesla_Inc		6
 Thanh			7
 ```
+
 * `relation2id.txt`
 ```python
 wife_of			0
