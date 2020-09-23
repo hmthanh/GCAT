@@ -4,7 +4,7 @@ TransE (initiation) -> KBGAT (encoder) -> ConvKB (decoder) -> Evaluation
 
 ## Knowlege Graph
 Example
-
+* `train.txt`
 ```python
 Melania_Trump wife_of Donald_Trump
 Donald_Trump president_of U.S
@@ -14,7 +14,32 @@ New_York state_of U.S
 Tesla_Inc founded_in U.S
 Melania_Trump first_lady U.S
 Tom_Cruise native_of U.S
+Thanh friend_of Melania_Trump
 ```
+* `entity2id.txt`
+```python
+Melania_Trump	0
+Donald_Trump	1
+U.S				2
+Jeff_Bezos		3
+Tom_Cruise		4
+New_York		5
+Tesla_Inc		6
+Thanh			7
+```
+* `relation2id.txt`
+```python
+wife_of			0
+president_of	1
+richest_of		2
+born_in			3
+state_of		4
+founded_in		5
+first_lady		6
+native_of		7
+friend_of		8
+```
+
 ->
 ```python
 [0 0 1] 
