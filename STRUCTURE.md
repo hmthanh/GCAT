@@ -4,6 +4,9 @@ TransE (initiation) -> KBGAT (encoder) -> ConvKB (decoder) -> Evaluation
 
 ## Knowlege Graph
 Example
+
+()
+
 * `train.txt`
 ```python
 Melania_Trump wife_of Donald_Trump
