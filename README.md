@@ -3,6 +3,7 @@
 ![Stars](https://img.shields.io/github/stars/hmthanh/GCAT)
 ![License](https://img.shields.io/github/license/hmthanh/GCAT)
 
+![GCAT](/GCAT.png)
 
 Graph Collaborate Attention Network
 
